@@ -3,111 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClaimReceipts - Holding Predictions Accountable</title>
-    <meta name="description" content="Track bold claims, predictions, and promises from CEOs, leaders, and organizations. See who tells the truth and who's just talking.">
+    <title>ClaimReceipts 🧾 - AI & Crypto Prediction Tracker</title>
+    <meta name="description" content="Track bold AI and Bitcoin predictions from tech leaders. Did they age like wine or milk? Find out here.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Light Mode (Default) */
+        /* ========== CSS VARIABLES ========== */
         :root {
-            --bg-primary: #f8f9fc;
+            --bg-primary: #fafbfc;
             --bg-secondary: #ffffff;
             --bg-card: #ffffff;
-            --bg-card-hover: #f3f4f8;
-            --text-primary: #1a1a2e;
-            --text-secondary: #4a4a5a;
-            --text-muted: #7a7a8a;
-            --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --accent-primary: #667eea;
-            --accent-secondary: #764ba2;
-            --status-true: #059669;
-            --status-false: #dc2626;
-            --status-pending: #d97706;
-            --status-expired: #6b7280;
-            --border-color: #e2e4ea;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --hero-text: #ffffff;
-        }
-
-        /* Dark Mode */
-        [data-theme="dark"] {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: #1a1a24;
-            --bg-card-hover: #22222e;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0b0;
-            --text-muted: #6a6a7a;
-            --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --accent-primary: #667eea;
-            --accent-secondary: #764ba2;
+            --bg-card-hover: #f8f9fc;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+            
+            /* Category Colors */
+            --ai-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            --ai-light: #ede9fe;
+            --ai-text: #7c3aed;
+            --btc-gradient: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            --btc-light: #fef3c7;
+            --btc-text: #d97706;
+            --tech-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            --tech-light: #cffafe;
+            --tech-text: #0891b2;
+            
+            /* Status Colors */
             --status-true: #10b981;
+            --status-true-bg: #d1fae5;
             --status-false: #ef4444;
+            --status-false-bg: #fee2e2;
             --status-pending: #f59e0b;
-            --status-expired: #6b7280;
-            --border-color: #2a2a3a;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-            --hero-text: #ffffff;
+            --status-pending-bg: #fef3c7;
         }
 
-        /* System preference detection */
+        [data-theme="dark"] {
+            --bg-primary: #0c0c14;
+            --bg-secondary: #13131d;
+            --bg-card: #1a1a28;
+            --bg-card-hover: #222232;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #2d2d3d;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.4);
+            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.5);
+            
+            --ai-light: rgba(139, 92, 246, 0.15);
+            --btc-light: rgba(245, 158, 11, 0.15);
+            --tech-light: rgba(6, 182, 212, 0.15);
+            --status-true-bg: rgba(16, 185, 129, 0.15);
+            --status-false-bg: rgba(239, 68, 68, 0.15);
+            --status-pending-bg: rgba(245, 158, 11, 0.15);
+        }
+
         @media (prefers-color-scheme: dark) {
             :root:not([data-theme="light"]) {
-                --bg-primary: #0a0a0f;
-                --bg-secondary: #12121a;
-                --bg-card: #1a1a24;
-                --bg-card-hover: #22222e;
-                --text-primary: #ffffff;
-                --text-secondary: #a0a0b0;
-                --text-muted: #6a6a7a;
-                --status-true: #10b981;
-                --status-false: #ef4444;
-                --status-pending: #f59e0b;
-                --status-expired: #6b7280;
-                --border-color: #2a2a3a;
-                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+                --bg-primary: #0c0c14;
+                --bg-secondary: #13131d;
+                --bg-card: #1a1a28;
+                --bg-card-hover: #222232;
+                --text-primary: #f1f5f9;
+                --text-secondary: #94a3b8;
+                --text-muted: #64748b;
+                --border-color: #2d2d3d;
+                --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+                --shadow: 0 4px 6px -1px rgba(0,0,0,0.4);
+                --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.5);
+                
+                --ai-light: rgba(139, 92, 246, 0.15);
+                --btc-light: rgba(245, 158, 11, 0.15);
+                --tech-light: rgba(6, 182, 212, 0.15);
+                --status-true-bg: rgba(16, 185, 129, 0.15);
+                --status-false-bg: rgba(239, 68, 68, 0.15);
+                --status-pending-bg: rgba(245, 158, 11, 0.15);
             }
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Smooth theme transition */
-        html {
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        html.theme-transition,
-        html.theme-transition *,
-        html.theme-transition *::before,
-        html.theme-transition *::after {
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html.theme-transition, html.theme-transition *, html.theme-transition *::before, html.theme-transition *::after {
+            transition: all 0.3s ease !important;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
         }
 
-        /* Header */
+        /* ========== HEADER ========== */
         .header {
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
-            padding: 1.5rem 2rem;
+            padding: 1rem 2rem;
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
         }
 
         .header-content {
@@ -116,84 +118,82 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
             gap: 1rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
+            text-decoration: none;
         }
 
-        .logo-icon {
-            font-size: 2rem;
-        }
-
+        .logo-emoji { font-size: 1.75rem; }
+        
         .logo-text {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
         }
 
-        .tagline {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        /* Theme Toggle */
-        .theme-toggle {
+        .header-right {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 50px;
-            padding: 0.375rem;
-            cursor: pointer;
-            transition: all 0.3s;
+            gap: 1rem;
         }
 
-        .theme-toggle:hover {
-            border-color: var(--accent-primary);
+        .theme-toggle {
+            display: flex;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 4px;
         }
 
         .theme-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
             width: 32px;
             height: 32px;
             border-radius: 50%;
             border: none;
             background: transparent;
             cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s;
-            color: var(--text-muted);
-        }
-
-        .theme-btn:hover {
-            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .theme-btn.active {
-            background: var(--accent-gradient);
+            background: var(--ai-gradient);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .submit-btn {
+            background: var(--ai-gradient);
             color: white;
-            box-shadow: var(--shadow);
+            border: none;
+            padding: 0.6rem 1.25rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: inherit;
         }
 
-        .theme-btn[data-theme="auto"].active {
-            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
         }
 
-        /* Hero Section */
+        /* ========== HERO ========== */
         .hero {
-            background: var(--accent-gradient);
-            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+            padding: 4rem 2rem 5rem;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -202,107 +202,294 @@
         .hero::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            opacity: 0.5;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(251, 191, 36, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.2) 0%, transparent 50%);
         }
 
         .hero-content {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
         }
 
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.875rem;
+            color: #fbbf24;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
         .hero h1 {
-            font-size: 3rem;
-            font-weight: 900;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            color: white;
             margin-bottom: 1rem;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            line-height: 1.1;
         }
 
-        .hero p {
-            font-size: 1.25rem;
-            opacity: 0.95;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Stats Bar */
-        .stats-bar {
-            background: var(--bg-secondary);
-            padding: 1.5rem 2rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .stats-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            flex-wrap: wrap;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 800;
-            background: var(--accent-gradient);
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .stat-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        .hero p {
+            font-size: 1.25rem;
+            color: rgba(255,255,255,0.8);
+            max-width: 600px;
+            margin: 0 auto 2rem;
         }
 
-        /* Main Content */
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .hero-stat-label {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* ========== CATEGORY TABS ========== */
+        .category-section {
+            max-width: 1400px;
+            margin: -2rem auto 0;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 0.75rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            scrollbar-width: none;
+        }
+
+        .category-tabs::-webkit-scrollbar { display: none; }
+
+        .category-tab {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: inherit;
+            box-shadow: var(--shadow);
+        }
+
+        .category-tab:hover {
+            border-color: var(--ai-text);
+            color: var(--text-primary);
+        }
+
+        .category-tab.active {
+            background: var(--ai-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .category-tab.active[data-category="btc"] {
+            background: var(--btc-gradient);
+        }
+
+        .category-tab.active[data-category="ai"] {
+            background: var(--ai-gradient);
+        }
+
+        .category-tab .count {
+            background: rgba(255,255,255,0.2);
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+
+        .category-tab:not(.active) .count {
+            background: var(--bg-primary);
+        }
+
+        /* ========== MAIN CONTENT ========== */
         .main {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
         }
 
-        /* Search & Filters */
-        .controls {
+        /* ========== VERDICT SECTIONS ========== */
+        .verdict-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 900px) {
+            .verdict-grid { grid-template-columns: 1fr; }
+        }
+
+        .verdict-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .verdict-header {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .verdict-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .verdict-card.milk .verdict-icon {
+            background: var(--status-false-bg);
+        }
+
+        .verdict-card.wine .verdict-icon {
+            background: var(--status-true-bg);
+        }
+
+        .verdict-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .verdict-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .verdict-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .verdict-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .verdict-item:hover {
+            transform: translateX(4px);
+        }
+
+        .verdict-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .verdict-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .verdict-person {
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .verdict-org {
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .verdict-claim {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ========== SEARCH & FILTERS ========== */
+        .search-section {
+            margin-bottom: 1.5rem;
         }
 
         .search-box {
-            flex: 1;
-            min-width: 250px;
             position: relative;
+            max-width: 500px;
         }
 
         .search-box input {
             width: 100%;
-            padding: 0.875rem 1rem 0.875rem 3rem;
+            padding: 1rem 1rem 1rem 3rem;
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
             font-size: 1rem;
+            color: var(--text-primary);
+            font-family: inherit;
             transition: all 0.2s;
         }
 
         .search-box input:focus {
             outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+            border-color: var(--ai-text);
+            box-shadow: 0 0 0 4px var(--ai-light);
         }
 
         .search-box::before {
@@ -311,503 +498,387 @@
             left: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 1rem;
         }
 
-        .filter-select {
-            padding: 0.875rem 2.5rem 0.875rem 1rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23a0a0b0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            transition: all 0.2s;
-        }
-
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-        }
-
-        /* Hall of Shame */
-        .hall-of-shame {
-            background: var(--bg-card);
-            border-radius: 16px;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-        }
-
-        .shame-toggle {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem 1.5rem;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            color: var(--text-primary);
-            font-family: inherit;
-            transition: background 0.2s;
-        }
-
-        .shame-toggle:hover {
-            background: var(--bg-card-hover);
-        }
-
-        .shame-toggle-left {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .shame-toggle-icon {
-            font-size: 1.25rem;
-            transition: transform 0.3s;
-        }
-
-        .hall-of-shame.expanded .shame-toggle-icon {
-            transform: rotate(180deg);
-        }
-
-        .shame-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
-            padding: 0 1.5rem;
-        }
-
-        .hall-of-shame.expanded .shame-content {
-            max-height: 500px;
-            padding: 0 1.5rem 1.5rem;
-        }
-
-        .shame-disclaimer {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-style: italic;
-        }
-
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0;
-        }
-
-        .shame-grid {
+        /* ========== CLAIMS GRID ========== */
+        .claims-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.25rem;
         }
 
-        .shame-card {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-            border: 1px solid var(--border-color);
-            transition: all 0.2s;
+        @media (max-width: 500px) {
+            .claims-grid { grid-template-columns: 1fr; }
         }
 
-        .shame-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--status-false);
-        }
-
-        .shame-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+        .claim-card {
             background: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .claim-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .claim-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .claim-card[data-category="ai"]::before { background: var(--ai-gradient); }
+        .claim-card[data-category="btc"]::before { background: var(--btc-gradient); }
+        .claim-card[data-category="tech"]::before { background: var(--tech-gradient); }
+
+        .claim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .claim-person {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .claim-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            margin: 0 auto 0.75rem;
-            border: 2px solid var(--status-false);
         }
 
-        .shame-name {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
+        .claim-card[data-category="ai"] .claim-avatar { background: var(--ai-light); }
+        .claim-card[data-category="btc"] .claim-avatar { background: var(--btc-light); }
+        .claim-card[data-category="tech"] .claim-avatar { background: var(--tech-light); }
+
+        .claim-name {
+            font-weight: 700;
+            font-size: 1rem;
         }
 
-        .shame-score {
-            color: var(--status-false);
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .shame-claims {
+        .claim-org {
+            font-size: 0.8rem;
             color: var(--text-muted);
-            font-size: 0.75rem;
         }
 
-        /* Claims Table */
-        .claims-container {
-            background: var(--bg-card);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-        }
-
-        .claims-header {
-            display: grid;
-            grid-template-columns: 180px 1fr 120px 140px 100px 100px;
-            padding: 1rem 1.5rem;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-color);
+        .claim-category {
+            font-size: 0.7rem;
             font-weight: 600;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
-        .claim-row {
-            display: grid;
-            grid-template-columns: 180px 1fr 120px 140px 100px 100px;
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            align-items: center;
-            transition: background 0.2s;
+        .claim-card[data-category="ai"] .claim-category { 
+            background: var(--ai-light); 
+            color: var(--ai-text);
         }
-
-        .claim-row:last-child {
-            border-bottom: none;
+        .claim-card[data-category="btc"] .claim-category { 
+            background: var(--btc-light); 
+            color: var(--btc-text);
         }
-
-        .claim-row:hover {
-            background: var(--bg-card-hover);
-        }
-
-        .claimant {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .claimant-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--bg-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-
-        .claimant-info {
-            min-width: 0;
-        }
-
-        .claimant-name {
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .claimant-org {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .claim-text {
-            padding-right: 1rem;
+        .claim-card[data-category="tech"] .claim-category { 
+            background: var(--tech-light); 
+            color: var(--tech-text);
         }
 
         .claim-quote {
+            font-size: 1rem;
             font-style: italic;
             color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        .claim-category {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            background: var(--bg-secondary);
-            border-radius: 4px;
-            color: var(--text-muted);
-            width: fit-content;
-            margin-top: 0.5rem;
+        .claim-quote::before { content: '"'; }
+        .claim-quote::after { content: '"'; }
+
+        .claim-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
         }
 
-        .countdown {
-            font-family: 'Inter', monospace;
+        .claim-countdown {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
             font-weight: 600;
-            font-size: 0.875rem;
         }
 
-        .countdown.urgent {
-            color: var(--status-false);
-            animation: pulse 1s infinite;
-        }
-
-        .countdown.pending {
-            color: var(--status-pending);
-        }
-
-        .countdown.expired {
-            color: var(--text-muted);
-        }
+        .claim-countdown.pending { color: var(--status-pending); }
+        .claim-countdown.urgent { color: var(--status-false); animation: pulse 1.5s infinite; }
+        .claim-countdown.expired { color: var(--text-muted); }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
 
-        .status-badge {
+        .claim-status {
             display: inline-flex;
             align-items: center;
-            gap: 0.375rem;
-            padding: 0.375rem 0.75rem;
+            gap: 0.35rem;
+            padding: 0.4rem 0.75rem;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
         }
 
-        .status-true {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--status-true);
-        }
+        .claim-status.true { background: var(--status-true-bg); color: var(--status-true); }
+        .claim-status.false { background: var(--status-false-bg); color: var(--status-false); }
+        .claim-status.pending { background: var(--status-pending-bg); color: var(--status-pending); }
 
-        .status-false {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--status-false);
-        }
-
-        .status-pending {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--status-pending);
-        }
-
-        .status-expired {
-            background: rgba(107, 114, 128, 0.15);
-            color: var(--status-expired);
-        }
-
-        .source-link {
-            color: var(--accent-primary);
+        .claim-source {
+            font-size: 0.75rem;
+            color: var(--ai-text);
             text-decoration: none;
-            font-size: 0.875rem;
             display: flex;
             align-items: center;
             gap: 0.25rem;
-            transition: color 0.2s;
+            margin-top: 0.75rem;
         }
 
-        .source-link:hover {
-            color: var(--accent-secondary);
-            text-decoration: underline;
+        .claim-source:hover { text-decoration: underline; }
+
+        /* ========== HALL OF SHAME (Collapsible) ========== */
+        .hall-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            margin-top: 2rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
         }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .claims-header {
-                display: none;
-            }
-
-            .claim-row {
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1.5rem;
-            }
-
-            .claimant {
-                width: 100%;
-            }
-
-            .claim-text {
-                padding-right: 0;
-            }
-
-            .claim-row > div:not(.claimant):not(.claim-text) {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-                padding-top: 0.5rem;
-                border-top: 1px solid var(--border-color);
-            }
-
-            .claim-row > div:not(.claimant):not(.claim-text)::before {
-                content: attr(data-label);
-                font-size: 0.75rem;
-                color: var(--text-muted);
-                text-transform: uppercase;
-            }
+        .hall-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.5rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.2s;
         }
 
-        @media (max-width: 640px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
+        .hall-toggle:hover { background: var(--bg-card-hover); }
 
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .stats-container {
-                gap: 1.5rem;
-            }
-
-            .stat-value {
-                font-size: 1.5rem;
-            }
-
-            .main {
-                padding: 1rem;
-            }
-
-            .controls {
-                flex-direction: column;
-            }
-
-            .filter-select {
-                width: 100%;
-            }
+        .hall-toggle-icon {
+            transition: transform 0.3s;
+            font-size: 0.8rem;
         }
 
-        /* Footer */
-        .footer {
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border-color);
-            padding: 2rem;
-            text-align: center;
-            margin-top: 4rem;
+        .hall-section.expanded .hall-toggle-icon { transform: rotate(180deg); }
+
+        .hall-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
         }
 
-        .footer p {
-            color: var(--text-muted);
-            font-size: 0.875rem;
+        .hall-section.expanded .hall-content {
+            max-height: 600px;
+            padding: 0 1.5rem 1.5rem;
         }
 
-        .footer a {
-            color: var(--accent-primary);
-            text-decoration: none;
+        .hall-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-secondary);
-        }
-
-        .empty-state-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            background: var(--accent-gradient);
+        .hall-card {
+            background: var(--bg-primary);
             border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .hall-card:hover {
+            border-color: var(--status-false);
+            transform: translateY(-2px);
+        }
+
+        .hall-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--status-false-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 0.75rem;
+            border: 3px solid var(--status-false);
+        }
+
+        .hall-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .hall-score {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--status-false);
+        }
+
+        .hall-record {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* ========== CTA ========== */
+        .cta-section {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            border-radius: 24px;
             padding: 3rem 2rem;
             text-align: center;
-            margin-top: 2rem;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(251, 191, 36, 0.15) 0%, transparent 60%);
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
         }
 
         .cta-section h2 {
+            color: white;
             font-size: 1.75rem;
             margin-bottom: 0.75rem;
         }
 
         .cta-section p {
-            opacity: 0.9;
+            color: rgba(255,255,255,0.8);
             margin-bottom: 1.5rem;
         }
 
-        .cta-button {
+        .cta-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             background: white;
-            color: var(--accent-secondary);
-            padding: 0.875rem 2rem;
-            border-radius: 12px;
-            font-weight: 600;
+            color: #1e1b4b;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-weight: 700;
             text-decoration: none;
+            font-size: 1rem;
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .cta-button:hover {
+        .cta-btn:hover {
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        /* Tooltip */
-        .tooltip {
-            position: relative;
-            cursor: help;
+        /* ========== FOOTER ========== */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+            text-align: center;
         }
 
-        .tooltip::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--bg-card);
-            color: var(--text-primary);
-            padding: 0.5rem 0.75rem;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.2s;
-            border: 1px solid var(--border-color);
-            z-index: 10;
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
         }
 
-        .tooltip:hover::after {
-            opacity: 1;
-            visibility: visible;
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: var(--ai-text); }
+
+        .footer-copy {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon { font-size: 4rem; margin-bottom: 1rem; }
+
+        /* ========== MOBILE ========== */
+        @media (max-width: 640px) {
+            .header { padding: 0.75rem 1rem; }
+            .hero { padding: 3rem 1rem 4rem; }
+            .main { padding: 1.5rem 1rem; }
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            .verdict-grid { grid-template-columns: 1fr; }
+            .submit-btn span { display: none; }
         }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-content">
-            <div class="logo">
-                <span class="logo-icon">🧾</span>
-                <div>
-                    <div class="logo-text">ClaimReceipts</div>
-                    <div class="tagline">Holding Predictions Accountable</div>
+            <a href="/" class="logo">
+                <span class="logo-emoji">🧾</span>
+                <span class="logo-text">ClaimReceipts</span>
+            </a>
+            <div class="header-right">
+                <div class="theme-toggle">
+                    <button class="theme-btn" data-theme="light" onclick="setTheme('light')" title="Light">☀️</button>
+                    <button class="theme-btn" data-theme="auto" onclick="setTheme('auto')" title="Auto">🌓</button>
+                    <button class="theme-btn" data-theme="dark" onclick="setTheme('dark')" title="Dark">🌙</button>
                 </div>
-            </div>
-            <div class="theme-toggle" role="group" aria-label="Theme selector">
-                <button class="theme-btn" data-theme="light" onclick="setTheme('light')" title="Light mode">
-                    ☀️
-                </button>
-                <button class="theme-btn" data-theme="auto" onclick="setTheme('auto')" title="Auto (System/Time)">
-                    🌓
-                </button>
-                <button class="theme-btn" data-theme="dark" onclick="setTheme('dark')" title="Dark mode">
-                    🌙
+                <button class="submit-btn" onclick="window.location.href='mailto:submit@claimreceipts.com?subject=New Claim Submission'">
+                    ➕ <span>Submit Claim</span>
                 </button>
             </div>
         </div>
@@ -815,200 +886,136 @@
 
     <section class="hero">
         <div class="hero-content">
-            <h1>🎯 The Internet's Prediction Tracker</h1>
-            <p>We track the bold claims, wild predictions, and confident promises from leaders and organizations. Because the internet never forgets.</p>
+            <div class="hero-badge">
+                <span>🔥</span> Tracking predictions since 2025
+            </div>
+            <h1>Did they <span class="highlight">predict the future</span> or just talk?</h1>
+            <p>We track AI, LLM, and Bitcoin predictions from tech leaders. Watch them age like wine... or milk. 🥛🍷</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="stat-total">0</div>
+                    <div class="hero-stat-label">Claims Tracked</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="stat-false">0</div>
+                    <div class="hero-stat-label">Aged Like Milk 🥛</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="stat-pending">0</div>
+                    <div class="hero-stat-label">Still Waiting ⏳</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="stat-true">0</div>
+                    <div class="hero-stat-label">Aged Like Wine 🍷</div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="stats-bar">
-        <div class="stats-container">
-            <div class="stat">
-                <div class="stat-value" id="total-claims">0</div>
-                <div class="stat-label">Claims Tracked</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="false-claims">0</div>
-                <div class="stat-label">Proven False</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="pending-claims">0</div>
-                <div class="stat-label">Still Pending</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="true-claims">0</div>
-                <div class="stat-label">Actually True</div>
-            </div>
+    <nav class="category-section">
+        <div class="category-tabs">
+            <button class="category-tab active" data-category="all" onclick="filterCategory('all')">
+                🌐 All Claims <span class="count" id="count-all">0</span>
+            </button>
+            <button class="category-tab" data-category="ai" onclick="filterCategory('ai')">
+                🤖 AI & LLMs <span class="count" id="count-ai">0</span>
+            </button>
+            <button class="category-tab" data-category="btc" onclick="filterCategory('btc')">
+                ₿ Bitcoin & Crypto <span class="count" id="count-btc">0</span>
+            </button>
+            <button class="category-tab" data-category="tech" onclick="filterCategory('tech')">
+                💻 Tech <span class="count" id="count-tech">0</span>
+            </button>
         </div>
-    </section>
+    </nav>
 
     <main class="main">
-        <div class="controls">
-            <div class="search-box">
-                <input type="text" id="search-input" placeholder="Search claims, people, or organizations...">
+        <!-- Aged Like Milk / Wine -->
+        <div class="verdict-grid">
+            <div class="verdict-card milk">
+                <div class="verdict-header">
+                    <div class="verdict-icon">🥛</div>
+                    <div>
+                        <div class="verdict-title">Aged Like Milk</div>
+                        <div class="verdict-subtitle">Claims proven FALSE</div>
+                    </div>
+                </div>
+                <div class="verdict-list" id="milk-list">
+                    <!-- Populated by JS -->
+                </div>
             </div>
-            <select class="filter-select" id="status-filter">
-                <option value="all">All Statuses</option>
-                <option value="pending">⏳ Pending</option>
-                <option value="false">🔴 False</option>
-                <option value="true">🟢 True</option>
-                <option value="expired">⚫ Expired</option>
-            </select>
-            <select class="filter-select" id="category-filter">
-                <option value="all">All Categories</option>
-                <option value="tech">💻 Tech</option>
-                <option value="crypto">₿ Crypto</option>
-                <option value="ai">🤖 AI</option>
-                <option value="business">💼 Business</option>
-                <option value="politics">🏛️ Politics</option>
-            </select>
+            <div class="verdict-card wine">
+                <div class="verdict-header">
+                    <div class="verdict-icon">🍷</div>
+                    <div>
+                        <div class="verdict-title">Aged Like Wine</div>
+                        <div class="verdict-subtitle">Claims proven TRUE</div>
+                    </div>
+                </div>
+                <div class="verdict-list" id="wine-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
         </div>
 
-        <section class="hall-of-shame" id="hall-of-shame">
-            <button class="shame-toggle" onclick="toggleHallOfShame()">
-                <div class="shame-toggle-left">
-                    <h2 class="section-title">🔥 Hall of Shame - Lowest Trust Scores</h2>
-                </div>
-                <span class="shame-toggle-icon">▼</span>
+        <!-- Search -->
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search claims, people, or companies...">
+            </div>
+        </div>
+
+        <!-- Claims Grid -->
+        <div class="claims-grid" id="claims-grid">
+            <!-- Populated by JS -->
+        </div>
+
+        <!-- Hall of Shame -->
+        <section class="hall-section" id="hall-section">
+            <button class="hall-toggle" onclick="toggleHall()">
+                <span>🔥 Hall of Shame - Worst Predictors</span>
+                <span class="hall-toggle-icon">▼</span>
             </button>
-            <div class="shame-content">
-                <p class="shame-disclaimer">⚠️ Early data - trust scores will become more meaningful as we track more claims.</p>
-                <div class="shame-grid" id="shame-grid">
+            <div class="hall-content">
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;">
+                    ⚠️ Trust scores based on tracked claims. More data = more accurate scores.
+                </p>
+                <div class="hall-grid" id="hall-grid">
                     <!-- Populated by JS -->
                 </div>
             </div>
         </section>
 
-        <section class="claims-container">
-            <div class="claims-header">
-                <div>Person/Org</div>
-                <div>Claim</div>
-                <div>Deadline</div>
-                <div>Countdown</div>
-                <div>Status</div>
-                <div>Source</div>
-            </div>
-            <div id="claims-list">
-                <!-- Populated by JS -->
-            </div>
-        </section>
-
+        <!-- CTA -->
         <section class="cta-section">
-            <h2>📢 Know a claim that should be tracked?</h2>
-            <p>Help us hold leaders accountable. Submit claims with sources and we'll add them to the tracker.</p>
-            <a href="mailto:submit@claimreceipts.com?subject=New Claim Submission" class="cta-button">
-                <span>✉️</span> Submit a Claim
-            </a>
+            <div class="cta-content">
+                <h2>🎯 Know a bold prediction?</h2>
+                <p>Help us track accountability. Submit claims with sources.</p>
+                <a href="mailto:submit@claimreceipts.com?subject=New Claim Submission" class="cta-btn">
+                    ✉️ Submit a Claim
+                </a>
+            </div>
         </section>
     </main>
 
     <footer class="footer">
-        <p>
-            <strong>ClaimReceipts</strong> - Because accountability matters. 
-            <br>
-            Built for collective humanity. Data sourced from public statements and interviews.
-            <br><br>
-            <a href="#">About</a> · <a href="#">FAQ</a> · <a href="#">Submit Claim</a> · <a href="#">API</a>
+        <div class="footer-links">
+            <a href="/about.html">About</a>
+            <a href="/faq.html">FAQ</a>
+            <a href="https://github.com/SunnyShah0588/claimreceipts" target="_blank">GitHub</a>
+        </div>
+        <p class="footer-copy">
+            ClaimReceipts © 2025 — Holding predictions accountable.<br>
+            Built for collective humanity. 🌍
         </p>
     </footer>
 
     <script>
-        // ============ THEME MANAGEMENT ============
-        function getTimeBasedTheme() {
-            const hour = new Date().getHours();
-            // Dark mode from 7 PM to 7 AM
-            return (hour >= 19 || hour < 7) ? 'dark' : 'light';
-        }
-
-        function applyTheme(theme) {
-            const root = document.documentElement;
-            
-            if (theme === 'auto') {
-                // Check system preference first
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                if (prefersDark) {
-                    root.setAttribute('data-theme', 'dark');
-                } else {
-                    // Fall back to time-based
-                    root.setAttribute('data-theme', getTimeBasedTheme());
-                }
-            } else {
-                root.setAttribute('data-theme', theme);
-            }
-            
-            // Update button states
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.theme === theme);
-            });
-        }
-
-        function setTheme(theme) {
-            // Add transition class for smooth animation
-            document.documentElement.classList.add('theme-transition');
-            
-            localStorage.setItem('claimreceipts-theme', theme);
-            applyTheme(theme);
-            
-            // Remove transition class after animation completes
-            setTimeout(() => {
-                document.documentElement.classList.remove('theme-transition');
-            }, 300);
-        }
-
-        function initTheme() {
-            const savedTheme = localStorage.getItem('claimreceipts-theme') || 'auto';
-            applyTheme(savedTheme);
-            
-            // Listen for system preference changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-                const currentTheme = localStorage.getItem('claimreceipts-theme') || 'auto';
-                if (currentTheme === 'auto') {
-                    applyTheme('auto');
-                }
-            });
-
-            // Update time-based theme every hour if on auto
-            setInterval(() => {
-                const currentTheme = localStorage.getItem('claimreceipts-theme') || 'auto';
-                if (currentTheme === 'auto') {
-                    applyTheme('auto');
-                }
-            }, 60 * 60 * 1000); // Check every hour
-        }
-
-        // Initialize theme immediately (before DOMContentLoaded to prevent flash)
-        initTheme();
-
         // ============ CLAIMS DATABASE ============
         const claimsData = [
+            // AI & LLM Claims
             {
                 id: 1,
-                person: "Cathie Wood",
-                organization: "ARK Invest",
-                avatar: "👩‍💼",
-                claim: "Bitcoin will reach $1 million by 2030",
-                category: "crypto",
-                dateMade: "2024-01-01",
-                deadline: "2030-12-31",
-                status: "pending",
-                sourceUrl: "https://www.cnbc.com/2024/01/11/cathie-wood-sees-more-than-1-million-bitcoin-by-2030.html",
-                sourceLabel: "CNBC"
-            },
-            {
-                id: 2,
-                person: "Various Tech CEOs",
-                organization: "Tech Industry",
-                avatar: "🤖",
-                claim: "AI will replace most software developers within 6 months to a year",
-                category: "ai",
-                dateMade: "2023-03-01",
-                deadline: "2024-03-01",
-                status: "false",
-                sourceUrl: "https://twitter.com",
-                sourceLabel: "Various Sources",
-                verdictNote: "Software engineering jobs are still thriving in 2025"
-            },
-            {
-                id: 3,
                 person: "Sam Altman",
                 organization: "OpenAI",
                 avatar: "👨‍💻",
@@ -1021,61 +1028,7 @@
                 sourceLabel: "Financial Times"
             },
             {
-                id: 4,
-                person: "Elon Musk",
-                organization: "Tesla",
-                avatar: "🚀",
-                claim: "Tesla will have full self-driving by end of 2020",
-                category: "tech",
-                dateMade: "2019-04-22",
-                deadline: "2020-12-31",
-                status: "false",
-                sourceUrl: "https://www.theverge.com/2019/4/22/18510828/tesla-elon-musk-autonomy-day-investor-comments-self-driving-cars-robotaxis",
-                sourceLabel: "The Verge",
-                verdictNote: "Full self-driving still not achieved as of 2025"
-            },
-            {
-                id: 5,
-                person: "John McAfee",
-                organization: "McAfee Corp",
-                avatar: "💀",
-                claim: "Bitcoin will reach $1 million by end of 2020 or I will eat my own... on national TV",
-                category: "crypto",
-                dateMade: "2017-07-17",
-                deadline: "2020-12-31",
-                status: "false",
-                sourceUrl: "https://twitter.com/officialmcafee/status/887024683379544065",
-                sourceLabel: "Twitter",
-                verdictNote: "Bitcoin ended 2020 at ~$29,000"
-            },
-            {
-                id: 6,
-                person: "Tim Draper",
-                organization: "Draper Associates",
-                avatar: "💰",
-                claim: "Bitcoin will hit $250,000 by end of 2025",
-                category: "crypto",
-                dateMade: "2023-06-01",
-                deadline: "2025-12-31",
-                status: "pending",
-                sourceUrl: "https://www.forbes.com/sites/billybambrough/2023/06/12/tim-draper-doubles-down-on-250000-bitcoin-price-prediction/",
-                sourceLabel: "Forbes"
-            },
-            {
-                id: 7,
-                person: "Mark Zuckerberg",
-                organization: "Meta",
-                avatar: "👤",
-                claim: "The Metaverse will be the next major computing platform within 5-10 years",
-                category: "tech",
-                dateMade: "2021-10-28",
-                deadline: "2031-10-28",
-                status: "pending",
-                sourceUrl: "https://about.fb.com/news/2021/10/founders-letter/",
-                sourceLabel: "Meta Blog"
-            },
-            {
-                id: 8,
+                id: 2,
                 person: "Emad Mostaque",
                 organization: "Stability AI",
                 avatar: "🎨",
@@ -1088,35 +1041,73 @@
                 sourceLabel: "Business Insider"
             },
             {
-                id: 9,
-                person: "Elizabeth Holmes",
-                organization: "Theranos",
-                avatar: "🩸",
-                claim: "Theranos can run hundreds of tests from a single drop of blood",
-                category: "business",
-                dateMade: "2014-01-01",
-                deadline: "2015-12-31",
+                id: 3,
+                person: "Various Tech CEOs",
+                organization: "Tech Industry",
+                avatar: "🤖",
+                claim: "AI will replace most software developers within 6 months to a year",
+                category: "ai",
+                dateMade: "2023-03-01",
+                deadline: "2024-03-01",
                 status: "false",
-                sourceUrl: "https://www.wsj.com/articles/theranos-has-struggled-with-blood-tests-1444881901",
-                sourceLabel: "WSJ",
-                verdictNote: "Proven to be fraudulent. Holmes convicted of fraud in 2022"
+                sourceUrl: "https://twitter.com",
+                sourceLabel: "Multiple Sources",
+                verdictNote: "Software engineering jobs are still thriving in 2025. Demand remains high."
             },
             {
-                id: 10,
-                person: "Adam Neumann",
-                organization: "WeWork",
-                avatar: "🏢",
-                claim: "WeWork will become the first trillion-dollar company",
-                category: "business",
-                dateMade: "2019-01-01",
-                deadline: "2029-01-01",
-                status: "false",
-                sourceUrl: "https://www.wsj.com/articles/this-is-not-the-way-everybody-behaves-how-adam-neumanns-over-the-top-style-built-wework-11568823827",
-                sourceLabel: "WSJ",
-                verdictNote: "WeWork filed for bankruptcy in 2023"
+                id: 4,
+                person: "Jensen Huang",
+                organization: "NVIDIA",
+                avatar: "💚",
+                claim: "The iPhone moment for AI has arrived",
+                category: "ai",
+                dateMade: "2023-05-29",
+                deadline: "2025-12-31",
+                status: "pending",
+                sourceUrl: "https://www.cnbc.com/2023/05/30/nvidia-ceo-says-ai-is-at-an-iphone-moment.html",
+                sourceLabel: "CNBC"
             },
             {
-                id: 11,
+                id: 5,
+                person: "Sundar Pichai",
+                organization: "Google",
+                avatar: "🔍",
+                claim: "AI will be more profound than fire or electricity",
+                category: "ai",
+                dateMade: "2018-01-01",
+                deadline: "2030-01-01",
+                status: "pending",
+                sourceUrl: "https://www.cnbc.com/2018/02/01/google-ceo-sundar-pichai-ai-is-more-important-than-fire-electricity.html",
+                sourceLabel: "CNBC"
+            },
+            {
+                id: 6,
+                person: "Dario Amodei",
+                organization: "Anthropic",
+                avatar: "🧠",
+                claim: "Powerful AI systems could pose existential risks within this decade",
+                category: "ai",
+                dateMade: "2023-07-01",
+                deadline: "2030-01-01",
+                status: "pending",
+                sourceUrl: "https://www.anthropic.com",
+                sourceLabel: "Anthropic"
+            },
+            {
+                id: 7,
+                person: "Yann LeCun",
+                organization: "Meta AI",
+                avatar: "🔬",
+                claim: "Current LLMs will never achieve AGI - we need new architectures",
+                category: "ai",
+                dateMade: "2023-06-01",
+                deadline: "2030-01-01",
+                status: "pending",
+                sourceUrl: "https://twitter.com/ylecun",
+                sourceLabel: "Twitter/X"
+            },
+            {
+                id: 8,
                 person: "Satya Nadella",
                 organization: "Microsoft",
                 avatar: "💼",
@@ -1128,13 +1119,54 @@
                 sourceUrl: "https://blogs.microsoft.com/blog/2023/03/16/introducing-microsoft-365-copilot-your-copilot-for-work/",
                 sourceLabel: "Microsoft Blog"
             },
+            // Bitcoin & Crypto Claims
+            {
+                id: 10,
+                person: "Cathie Wood",
+                organization: "ARK Invest",
+                avatar: "📈",
+                claim: "Bitcoin will reach $1 million by 2030",
+                category: "btc",
+                dateMade: "2024-01-01",
+                deadline: "2030-12-31",
+                status: "pending",
+                sourceUrl: "https://www.cnbc.com/2024/01/11/cathie-wood-sees-more-than-1-million-bitcoin-by-2030.html",
+                sourceLabel: "CNBC"
+            },
+            {
+                id: 11,
+                person: "Tim Draper",
+                organization: "Draper Associates",
+                avatar: "💰",
+                claim: "Bitcoin will hit $250,000 by end of 2025",
+                category: "btc",
+                dateMade: "2023-06-01",
+                deadline: "2025-12-31",
+                status: "pending",
+                sourceUrl: "https://www.forbes.com/sites/billybambrough/2023/06/12/tim-draper-doubles-down-on-250000-bitcoin-price-prediction/",
+                sourceLabel: "Forbes"
+            },
             {
                 id: 12,
+                person: "John McAfee",
+                organization: "McAfee",
+                avatar: "💀",
+                claim: "Bitcoin will reach $1 million by end of 2020",
+                category: "btc",
+                dateMade: "2017-07-17",
+                deadline: "2020-12-31",
+                status: "false",
+                sourceUrl: "https://twitter.com/officialmcafee/status/887024683379544065",
+                sourceLabel: "Twitter",
+                verdictNote: "Bitcoin ended 2020 at ~$29,000. Not even close to $1 million."
+            },
+            {
+                id: 13,
                 person: "Anthony Pompliano",
                 organization: "Pomp Investments",
-                avatar: "📈",
+                avatar: "📊",
                 claim: "Bitcoin to $100,000 by end of 2021",
-                category: "crypto",
+                category: "btc",
                 dateMade: "2021-01-01",
                 deadline: "2021-12-31",
                 status: "false",
@@ -1143,162 +1175,223 @@
                 verdictNote: "Bitcoin ended 2021 at ~$47,000"
             },
             {
-                id: 13,
+                id: 14,
+                person: "Michael Saylor",
+                organization: "MicroStrategy",
+                avatar: "🏦",
+                claim: "Bitcoin will become the world's reserve asset",
+                category: "btc",
+                dateMade: "2021-01-01",
+                deadline: "2035-01-01",
+                status: "pending",
+                sourceUrl: "https://twitter.com/saylor",
+                sourceLabel: "Twitter/X"
+            },
+            {
+                id: 15,
                 person: "Do Kwon",
                 organization: "Terraform Labs",
                 avatar: "🌙",
-                claim: "UST (TerraUSD) is the most decentralized and secure stablecoin",
-                category: "crypto",
+                claim: "UST is the most decentralized and secure stablecoin",
+                category: "btc",
                 dateMade: "2022-01-01",
                 deadline: "2022-12-31",
                 status: "false",
                 sourceUrl: "https://twitter.com/staboracle",
                 sourceLabel: "Twitter",
-                verdictNote: "UST collapsed in May 2022, losing $40+ billion in value"
+                verdictNote: "UST collapsed in May 2022, losing $40+ billion. Do Kwon arrested."
             },
             {
-                id: 14,
+                id: 16,
                 person: "Sam Bankman-Fried",
                 organization: "FTX",
-                avatar: "🏦",
+                avatar: "🎮",
                 claim: "FTX is the safest and most regulated crypto exchange",
-                category: "crypto",
+                category: "btc",
                 dateMade: "2022-06-01",
                 deadline: "2023-01-01",
                 status: "false",
                 sourceUrl: "https://www.nytimes.com/2022/11/14/technology/ftx-sam-bankman-fried-crypto-bankruptcy.html",
                 sourceLabel: "NY Times",
-                verdictNote: "FTX collapsed in Nov 2022. SBF convicted of fraud"
+                verdictNote: "FTX collapsed Nov 2022. $8B missing. SBF convicted of fraud."
+            },
+            // Tech Claims
+            {
+                id: 20,
+                person: "Elon Musk",
+                organization: "Tesla",
+                avatar: "🚗",
+                claim: "Tesla will have full self-driving by end of 2020",
+                category: "tech",
+                dateMade: "2019-04-22",
+                deadline: "2020-12-31",
+                status: "false",
+                sourceUrl: "https://www.theverge.com/2019/4/22/18510828/tesla-elon-musk-autonomy-day-investor-comments-self-driving-cars-robotaxis",
+                sourceLabel: "The Verge",
+                verdictNote: "Full self-driving still not achieved as of 2025. Still in beta."
             },
             {
-                id: 15,
-                person: "Jensen Huang",
-                organization: "NVIDIA",
-                avatar: "💚",
-                claim: "The iPhone moment for AI has arrived",
-                category: "ai",
-                dateMade: "2023-05-29",
-                deadline: "2025-12-31",
+                id: 21,
+                person: "Elon Musk",
+                organization: "Tesla",
+                avatar: "🚗",
+                claim: "There will be 1 million Tesla robotaxis on the road by 2020",
+                category: "tech",
+                dateMade: "2019-04-22",
+                deadline: "2020-12-31",
+                status: "false",
+                sourceUrl: "https://www.theverge.com/2019/4/22/18510828/tesla-elon-musk-autonomy-day-investor-comments-self-driving-cars-robotaxis",
+                sourceLabel: "The Verge",
+                verdictNote: "Zero robotaxis deployed by 2020. Still none operating commercially in 2025."
+            },
+            {
+                id: 22,
+                person: "Mark Zuckerberg",
+                organization: "Meta",
+                avatar: "👤",
+                claim: "The Metaverse will be the next major computing platform",
+                category: "tech",
+                dateMade: "2021-10-28",
+                deadline: "2026-10-28",
                 status: "pending",
-                sourceUrl: "https://www.cnbc.com/2023/05/30/nvidia-ceo-says-ai-is-at-an-iphone-moment.html",
-                sourceLabel: "CNBC"
+                sourceUrl: "https://about.fb.com/news/2021/10/founders-letter/",
+                sourceLabel: "Meta Blog"
+            },
+            {
+                id: 23,
+                person: "Elizabeth Holmes",
+                organization: "Theranos",
+                avatar: "🩸",
+                claim: "Theranos can run hundreds of tests from a single drop of blood",
+                category: "tech",
+                dateMade: "2014-01-01",
+                deadline: "2015-12-31",
+                status: "false",
+                sourceUrl: "https://www.wsj.com/articles/theranos-has-struggled-with-blood-tests-1444881901",
+                sourceLabel: "WSJ",
+                verdictNote: "Proven to be complete fraud. Holmes convicted and imprisoned."
             }
         ];
 
-        // Calculate trust scores for Hall of Shame
-        function calculateTrustScores() {
-            const personStats = {};
-            
-            claimsData.forEach(claim => {
-                const key = claim.person;
-                if (!personStats[key]) {
-                    personStats[key] = {
-                        name: claim.person,
-                        org: claim.organization,
-                        avatar: claim.avatar,
-                        total: 0,
-                        false: 0,
-                        true: 0
-                    };
-                }
-                personStats[key].total++;
-                if (claim.status === 'false') personStats[key].false++;
-                if (claim.status === 'true') personStats[key].true++;
+        // ============ THEME MANAGEMENT ============
+        function getTimeBasedTheme() {
+            const hour = new Date().getHours();
+            return (hour >= 19 || hour < 7) ? 'dark' : 'light';
+        }
+
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            if (theme === 'auto') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                root.setAttribute('data-theme', prefersDark ? 'dark' : getTimeBasedTheme());
+            } else {
+                root.setAttribute('data-theme', theme);
+            }
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === theme);
             });
-
-            return Object.values(personStats)
-                .filter(p => p.total >= 1 && p.false > 0)
-                .map(p => ({
-                    ...p,
-                    trustScore: Math.round(((p.total - p.false) / p.total) * 100)
-                }))
-                .sort((a, b) => a.trustScore - b.trustScore)
-                .slice(0, 4);
         }
 
-        // Render Hall of Shame
-        function renderHallOfShame() {
-            const shameGrid = document.getElementById('shame-grid');
-            const worstOffenders = calculateTrustScores();
-            
-            if (worstOffenders.length === 0) {
-                document.getElementById('hall-of-shame').style.display = 'none';
-                return;
-            }
-
-            shameGrid.innerHTML = worstOffenders.map(person => `
-                <div class="shame-card">
-                    <div class="shame-avatar">${person.avatar}</div>
-                    <div class="shame-name">${person.name}</div>
-                    <div class="shame-score">${person.trustScore}% Trust Score</div>
-                    <div class="shame-claims">${person.false}/${person.total} claims false</div>
-                </div>
-            `).join('');
+        function setTheme(theme) {
+            document.documentElement.classList.add('theme-transition');
+            localStorage.setItem('claimreceipts-theme', theme);
+            applyTheme(theme);
+            setTimeout(() => document.documentElement.classList.remove('theme-transition'), 300);
         }
 
-        // Toggle Hall of Shame
-        function toggleHallOfShame() {
-            const section = document.getElementById('hall-of-shame');
-            section.classList.toggle('expanded');
+        function initTheme() {
+            const savedTheme = localStorage.getItem('claimreceipts-theme') || 'auto';
+            applyTheme(savedTheme);
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                if ((localStorage.getItem('claimreceipts-theme') || 'auto') === 'auto') applyTheme('auto');
+            });
         }
 
-        // Calculate countdown
+        initTheme();
+
+        // ============ HELPER FUNCTIONS ============
         function getCountdown(deadline, status) {
-            if (status === 'true' || status === 'false') {
-                return { text: status === 'true' ? '✅ Verified' : '❌ Debunked', class: status };
-            }
+            if (status === 'true') return { text: '✅ Verified', class: 'true' };
+            if (status === 'false') return { text: '❌ Debunked', class: 'false' };
 
             const now = new Date();
             const end = new Date(deadline);
             const diff = end - now;
 
-            if (diff <= 0) {
-                return { text: '⏰ EXPIRED', class: 'expired' };
-            }
+            if (diff <= 0) return { text: '⏰ EXPIRED', class: 'expired' };
 
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
             if (days > 365) {
                 const years = Math.floor(days / 365);
                 return { text: `${years}y ${days % 365}d left`, class: 'pending' };
             } else if (days > 30) {
                 return { text: `${days} days left`, class: 'pending' };
             } else if (days > 0) {
-                return { text: `${days}d ${hours}h left`, class: 'urgent' };
+                return { text: `🔥 ${days}d left`, class: 'urgent' };
             } else {
-                return { text: `${hours} hours left`, class: 'urgent' };
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                return { text: `🔥 ${hours}h left`, class: 'urgent' };
             }
         }
 
-        // Get status badge HTML
-        function getStatusBadge(status) {
-            const badges = {
-                true: '<span class="status-badge status-true">🟢 True</span>',
-                false: '<span class="status-badge status-false">🔴 False</span>',
-                pending: '<span class="status-badge status-pending">⏳ Pending</span>',
-                expired: '<span class="status-badge status-expired">⚫ Expired</span>'
-            };
-            return badges[status] || badges.pending;
+        function getCategoryLabel(cat) {
+            const labels = { ai: '🤖 AI/LLM', btc: '₿ Crypto', tech: '💻 Tech' };
+            return labels[cat] || cat;
         }
 
-        // Format date
-        function formatDate(dateStr) {
-            const date = new Date(dateStr);
-            return date.toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
-            });
+        // ============ RENDER FUNCTIONS ============
+        function renderStats() {
+            const total = claimsData.length;
+            const falseClaims = claimsData.filter(c => c.status === 'false').length;
+            const pending = claimsData.filter(c => c.status === 'pending').length;
+            const trueClaims = claimsData.filter(c => c.status === 'true').length;
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-false').textContent = falseClaims;
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-true').textContent = trueClaims;
+
+            // Category counts
+            document.getElementById('count-all').textContent = total;
+            document.getElementById('count-ai').textContent = claimsData.filter(c => c.category === 'ai').length;
+            document.getElementById('count-btc').textContent = claimsData.filter(c => c.category === 'btc').length;
+            document.getElementById('count-tech').textContent = claimsData.filter(c => c.category === 'tech').length;
         }
 
-        // Render claims
+        function renderVerdicts() {
+            const milkList = document.getElementById('milk-list');
+            const wineList = document.getElementById('wine-list');
+
+            const falseClaims = claimsData.filter(c => c.status === 'false').slice(0, 4);
+            const trueClaims = claimsData.filter(c => c.status === 'true').slice(0, 4);
+
+            milkList.innerHTML = falseClaims.length ? falseClaims.map(c => `
+                <div class="verdict-item">
+                    <div class="verdict-avatar">${c.avatar}</div>
+                    <div class="verdict-content">
+                        <div class="verdict-person">${c.person} <span class="verdict-org">· ${c.organization}</span></div>
+                        <div class="verdict-claim">${c.claim}</div>
+                    </div>
+                </div>
+            `).join('') : '<p style="color: var(--text-muted); padding: 1rem;">No debunked claims yet!</p>';
+
+            wineList.innerHTML = trueClaims.length ? trueClaims.map(c => `
+                <div class="verdict-item">
+                    <div class="verdict-avatar">${c.avatar}</div>
+                    <div class="verdict-content">
+                        <div class="verdict-person">${c.person} <span class="verdict-org">· ${c.organization}</span></div>
+                        <div class="verdict-claim">${c.claim}</div>
+                    </div>
+                </div>
+            `).join('') : '<p style="color: var(--text-muted); padding: 1rem;">No verified claims yet. Time will tell! ⏳</p>';
+        }
+
         function renderClaims(claims) {
-            const claimsList = document.getElementById('claims-list');
-            
+            const grid = document.getElementById('claims-grid');
+
             if (claims.length === 0) {
-                claimsList.innerHTML = `
-                    <div class="empty-state">
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
                         <div class="empty-state-icon">🔍</div>
                         <p>No claims found matching your search.</p>
                     </div>
@@ -1306,97 +1399,100 @@
                 return;
             }
 
-            claimsList.innerHTML = claims.map(claim => {
-                const countdown = getCountdown(claim.deadline, claim.status);
-                const categoryEmojis = {
-                    tech: '💻',
-                    crypto: '₿',
-                    ai: '🤖',
-                    business: '💼',
-                    politics: '🏛️'
-                };
-                
+            grid.innerHTML = claims.map(c => {
+                const countdown = getCountdown(c.deadline, c.status);
                 return `
-                    <div class="claim-row" data-status="${claim.status}" data-category="${claim.category}">
-                        <div class="claimant">
-                            <div class="claimant-avatar">${claim.avatar}</div>
-                            <div class="claimant-info">
-                                <div class="claimant-name">${claim.person}</div>
-                                <div class="claimant-org">${claim.organization}</div>
+                    <div class="claim-card" data-category="${c.category}">
+                        <div class="claim-header">
+                            <div class="claim-person">
+                                <div class="claim-avatar">${c.avatar}</div>
+                                <div>
+                                    <div class="claim-name">${c.person}</div>
+                                    <div class="claim-org">${c.organization}</div>
+                                </div>
                             </div>
+                            <span class="claim-category">${getCategoryLabel(c.category)}</span>
                         </div>
-                        <div class="claim-text">
-                            <div class="claim-quote">"${claim.claim}"</div>
-                            <div class="claim-category">${categoryEmojis[claim.category] || '📌'} ${claim.category.toUpperCase()}</div>
+                        <p class="claim-quote">${c.claim}</p>
+                        <div class="claim-footer">
+                            <span class="claim-countdown ${countdown.class}">${countdown.text}</span>
+                            <span class="claim-status ${c.status}">
+                                ${c.status === 'true' ? '🍷 TRUE' : c.status === 'false' ? '🥛 FALSE' : '⏳ PENDING'}
+                            </span>
                         </div>
-                        <div data-label="Deadline">
-                            <span>${formatDate(claim.deadline)}</span>
-                        </div>
-                        <div data-label="Countdown">
-                            <span class="countdown ${countdown.class}">${countdown.text}</span>
-                        </div>
-                        <div data-label="Status">
-                            ${getStatusBadge(claim.status)}
-                        </div>
-                        <div data-label="Source">
-                            <a href="${claim.sourceUrl}" target="_blank" rel="noopener" class="source-link">
-                                ${claim.sourceLabel} ↗
-                            </a>
-                        </div>
+                        <a href="${c.sourceUrl}" target="_blank" class="claim-source">
+                            📎 ${c.sourceLabel}
+                        </a>
                     </div>
                 `;
             }).join('');
         }
 
-        // Update stats
-        function updateStats(claims) {
-            const total = claims.length;
-            const falseClaims = claims.filter(c => c.status === 'false').length;
-            const pending = claims.filter(c => c.status === 'pending').length;
-            const trueClaims = claims.filter(c => c.status === 'true').length;
-
-            document.getElementById('total-claims').textContent = total;
-            document.getElementById('false-claims').textContent = falseClaims;
-            document.getElementById('pending-claims').textContent = pending;
-            document.getElementById('true-claims').textContent = trueClaims;
-        }
-
-        // Filter claims
-        function filterClaims() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const statusFilter = document.getElementById('status-filter').value;
-            const categoryFilter = document.getElementById('category-filter').value;
-
-            let filtered = claimsData.filter(claim => {
-                const matchesSearch = 
-                    claim.person.toLowerCase().includes(searchTerm) ||
-                    claim.organization.toLowerCase().includes(searchTerm) ||
-                    claim.claim.toLowerCase().includes(searchTerm);
-                
-                const matchesStatus = statusFilter === 'all' || claim.status === statusFilter;
-                const matchesCategory = categoryFilter === 'all' || claim.category === categoryFilter;
-
-                return matchesSearch && matchesStatus && matchesCategory;
+        function renderHallOfShame() {
+            const personStats = {};
+            claimsData.forEach(c => {
+                if (!personStats[c.person]) {
+                    personStats[c.person] = { name: c.person, avatar: c.avatar, total: 0, false: 0 };
+                }
+                personStats[c.person].total++;
+                if (c.status === 'false') personStats[c.person].false++;
             });
 
+            const worstOffenders = Object.values(personStats)
+                .filter(p => p.false > 0)
+                .map(p => ({ ...p, score: Math.round(((p.total - p.false) / p.total) * 100) }))
+                .sort((a, b) => a.score - b.score)
+                .slice(0, 6);
+
+            const grid = document.getElementById('hall-grid');
+            grid.innerHTML = worstOffenders.map(p => `
+                <div class="hall-card">
+                    <div class="hall-avatar">${p.avatar}</div>
+                    <div class="hall-name">${p.name}</div>
+                    <div class="hall-score">${p.score}%</div>
+                    <div class="hall-record">${p.false}/${p.total} claims wrong</div>
+                </div>
+            `).join('');
+        }
+
+        // ============ FILTER & SEARCH ============
+        let currentCategory = 'all';
+
+        function filterCategory(category) {
+            currentCategory = category;
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.category === category);
+            });
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            let filtered = claimsData.filter(c => {
+                const matchesCategory = currentCategory === 'all' || c.category === currentCategory;
+                const matchesSearch = c.person.toLowerCase().includes(searchTerm) ||
+                    c.organization.toLowerCase().includes(searchTerm) ||
+                    c.claim.toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch;
+            });
             renderClaims(filtered);
         }
 
-        // Initialize
+        function toggleHall() {
+            document.getElementById('hall-section').classList.toggle('expanded');
+        }
+
+        // ============ INITIALIZE ============
         document.addEventListener('DOMContentLoaded', () => {
+            renderStats();
+            renderVerdicts();
             renderClaims(claimsData);
-            updateStats(claimsData);
             renderHallOfShame();
 
-            // Event listeners
-            document.getElementById('search-input').addEventListener('input', filterClaims);
-            document.getElementById('status-filter').addEventListener('change', filterClaims);
-            document.getElementById('category-filter').addEventListener('change', filterClaims);
+            document.getElementById('search-input').addEventListener('input', applyFilters);
 
             // Update countdowns every minute
-            setInterval(() => {
-                filterClaims();
-            }, 60000);
+            setInterval(() => applyFilters(), 60000);
         });
     </script>
 </body>

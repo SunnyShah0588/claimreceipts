@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - ClaimReceipts 🧾</title>
+    <meta name="description" content="Why we built ClaimReceipts - holding tech leaders and crypto influencers accountable for their bold predictions.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #fafbfc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.07);
+            --ai-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            --ai-text: #7c3aed;
+            --ai-light: #ede9fe;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0c0c14;
+            --bg-secondary: #13131d;
+            --bg-card: #1a1a28;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #2d2d3d;
+            --ai-light: rgba(139, 92, 246, 0.15);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg-primary: #0c0c14;
+                --bg-secondary: #13131d;
+                --bg-card: #1a1a28;
+                --text-primary: #f1f5f9;
+                --text-secondary: #94a3b8;
+                --text-muted: #64748b;
+                --border-color: #2d2d3d;
+                --ai-light: rgba(139, 92, 246, 0.15);
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-emoji { font-size: 1.5rem; }
+        .logo-text { font-size: 1.1rem; font-weight: 700; }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--ai-text);
+        }
+
+        .page-hero {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .page-hero h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-hero p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background: var(--ai-light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box h3 {
+            color: var(--ai-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .value-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .value-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .value-title {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .value-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .team-note {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .team-note .emoji {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .footer a {
+            color: var(--ai-text);
+            text-decoration: none;
+        }
+
+        @media (max-width: 640px) {
+            .page-hero { padding: 3rem 1rem; }
+            .page-hero h1 { font-size: 2rem; }
+            .content { padding: 2rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <span class="logo-emoji">🧾</span>
+                <span class="logo-text">ClaimReceipts</span>
+            </a>
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about.html" class="active">About</a>
+                <a href="/faq.html">FAQ</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <h1>🎯 About ClaimReceipts</h1>
+        <p>Why accountability matters in the age of hype</p>
+    </section>
+
+    <main class="content">
+        <section class="section">
+            <h2>🤔 Why We Built This</h2>
+            <p>
+                Every day, tech CEOs, crypto influencers, and industry leaders make bold predictions. 
+                <strong>"AI will replace all programmers in 6 months!"</strong> 
+                <strong>"Bitcoin to $1 million by next year!"</strong> 
+                <strong>"Full self-driving by 2020!"</strong>
+            </p>
+            <p>
+                These claims generate headlines, move markets, and influence decisions. But what happens when the deadline passes? 
+                Usually... nothing. The world moves on, the prediction is forgotten, and the same people make new bold claims.
+            </p>
+            
+            <div class="highlight-box">
+                <h3>🧾 We're keeping the receipts.</h3>
+                <p style="margin-bottom: 0;">
+                    ClaimReceipts is a public archive of predictions with deadlines. We track what was said, when it was said, 
+                    and whether it came true. Because accountability shouldn't be optional.
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🌍 Our Mission</h2>
+            <p>
+                We believe that <strong>collective trust matters</strong>. When leaders can say anything without consequence, 
+                it erodes our ability to make informed decisions. Hype cycles distort reality. FOMO drives poor choices.
+            </p>
+            <p>
+                By tracking predictions over time, we hope to:
+            </p>
+            <ul style="color: var(--text-secondary); margin-left: 1.5rem;">
+                <li>Encourage critical thinking about bold claims</li>
+                <li>Build a historical record of predictions in tech & crypto</li>
+                <li>Help people identify who's worth listening to</li>
+                <li>Add a small dose of accountability to public discourse</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>💎 Our Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">📜</div>
+                    <div class="value-title">Accuracy</div>
+                    <div class="value-desc">Every claim is sourced with links to original statements</div>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">⚖️</div>
+                    <div class="value-title">Fairness</div>
+                    <div class="value-desc">We track both successes and failures equally</div>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🔓</div>
+                    <div class="value-title">Transparency</div>
+                    <div class="value-desc">Our code is open source on GitHub</div>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🎯</div>
+                    <div class="value-title">Objectivity</div>
+                    <div class="value-desc">We don't editorialize - just facts and verdicts</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>📊 What We Track</h2>
+            <p>We focus on claims that are:</p>
+            <ul style="color: var(--text-secondary); margin-left: 1.5rem;">
+                <li><strong>Specific</strong> - Clear enough to be proven true or false</li>
+                <li><strong>Time-bound</strong> - Has a deadline or timeframe</li>
+                <li><strong>Verifiable</strong> - Can be checked against reality</li>
+                <li><strong>Sourced</strong> - Made publicly with documented evidence</li>
+            </ul>
+            <p style="margin-top: 1rem;">
+                Our current focus areas are <strong>AI/LLM predictions</strong>, <strong>Bitcoin & crypto forecasts</strong>, 
+                and <strong>tech industry claims</strong>. We may expand to other areas in the future.
+            </p>
+        </section>
+
+        <div class="team-note">
+            <div class="emoji">🛠️</div>
+            <h3>Built by the Community</h3>
+            <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto;">
+                ClaimReceipts is an open-source project. Anyone can submit claims, suggest corrections, 
+                or contribute to the codebase. Together, we can build a more accountable future.
+            </p>
+            <p style="margin-top: 1rem;">
+                <a href="https://github.com/SunnyShah0588/claimreceipts" target="_blank" style="color: var(--ai-text); font-weight: 600;">
+                    ⭐ Star us on GitHub
+                </a>
+            </p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>
+            ClaimReceipts © 2025 — <a href="/">Home</a> · <a href="/about.html">About</a> · <a href="/faq.html">FAQ</a> · <a href="https://github.com/SunnyShah0588/claimreceipts">GitHub</a>
+        </p>
+    </footer>
+
+    <script>
+        // Theme handling
+        function initTheme() {
+            const saved = localStorage.getItem('claimreceipts-theme');
+            if (saved && saved !== 'auto') {
+                document.documentElement.setAttribute('data-theme', saved);
+            }
+        }
+        initTheme();
+    </script>
+</body>
+</html>

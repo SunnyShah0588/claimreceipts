@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - ClaimReceipts 🧾</title>
+    <meta name="description" content="Frequently asked questions about ClaimReceipts - how we track predictions, verify claims, and maintain accuracy.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #fafbfc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.07);
+            --ai-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            --ai-text: #7c3aed;
+            --ai-light: #ede9fe;
+            --btc-light: #fef3c7;
+            --btc-text: #d97706;
+            --status-true: #10b981;
+            --status-false: #ef4444;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0c0c14;
+            --bg-secondary: #13131d;
+            --bg-card: #1a1a28;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #2d2d3d;
+            --ai-light: rgba(139, 92, 246, 0.15);
+            --btc-light: rgba(245, 158, 11, 0.15);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg-primary: #0c0c14;
+                --bg-secondary: #13131d;
+                --bg-card: #1a1a28;
+                --text-primary: #f1f5f9;
+                --text-secondary: #94a3b8;
+                --text-muted: #64748b;
+                --border-color: #2d2d3d;
+                --ai-light: rgba(139, 92, 246, 0.15);
+                --btc-light: rgba(245, 158, 11, 0.15);
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-emoji { font-size: 1.5rem; }
+        .logo-text { font-size: 1.1rem; font-weight: 700; }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--ai-text);
+        }
+
+        .page-hero {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .page-hero h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-hero p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.5rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: left;
+            transition: background 0.2s;
+        }
+
+        .faq-question:hover {
+            background: var(--bg-primary);
+        }
+
+        .faq-icon {
+            font-size: 1.25rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer-content {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .faq-answer-content p {
+            margin-bottom: 0.75rem;
+        }
+
+        .faq-answer-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .faq-answer-content a {
+            color: var(--ai-text);
+        }
+
+        .faq-answer-content ul {
+            margin-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .faq-category {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+            margin-right: 0.75rem;
+        }
+
+        .faq-category.general { background: var(--ai-light); color: var(--ai-text); }
+        .faq-category.submission { background: var(--btc-light); color: var(--btc-text); }
+        .faq-category.verdicts { background: #d1fae5; color: var(--status-true); }
+
+        .cta-box {
+            background: var(--ai-light);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .cta-box h3 {
+            color: var(--ai-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .cta-box a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--ai-gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .cta-box a:hover {
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .footer a {
+            color: var(--ai-text);
+            text-decoration: none;
+        }
+
+        @media (max-width: 640px) {
+            .page-hero { padding: 3rem 1rem; }
+            .page-hero h1 { font-size: 2rem; }
+            .content { padding: 2rem 1rem; }
+            .faq-question { padding: 1rem; font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <span class="logo-emoji">🧾</span>
+                <span class="logo-text">ClaimReceipts</span>
+            </a>
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about.html">About</a>
+                <a href="/faq.html" class="active">FAQ</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <h1>❓ Frequently Asked Questions</h1>
+        <p>Everything you need to know about ClaimReceipts</p>
+    </section>
+
+    <main class="content">
+        
+        <!-- General Questions -->
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+                <span><span class="faq-category general">General</span> What is ClaimReceipts?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    <p>ClaimReceipts is a public tracker for bold predictions made by tech leaders, crypto influencers, and public figures. We document claims with deadlines and track whether they come true or not.</p>
+                    <p>Think of it as "receipts" for predictions — proof of what was said, so we can hold people accountable when their forecasts don't pan out.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+                <span><span class="faq-category general">General</span> Why does this matter?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    <p>Bold predictions influence real decisions. When a CEO says "AI will replace all programmers in 6 months," people panic about their careers. When an influencer says "Bitcoin to $1 million," people invest their savings.</p>
+                    <p>But when these predictions fail, there's usually no accountability. The same people make new predictions and the cycle continues. We're here to track the record.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+                <span><span class="faq-category general">General</span> What does "Aged Like Milk" vs "Aged Like Wine" mean?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    <p><strong>🥛 Aged Like Milk</strong> — Claims that were proven FALSE. Like milk, they went bad over time.</p>
+                    <p><strong>🍷 Aged Like Wine</strong> — Claims that were proven TRUE. Like wine, they got better with time.</p>
+                    <p>It's internet slang for predictions that either embarrass or vindicate the person who made them!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submission Questions -->
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+                <span><span class="faq-category submission">Submission</span> How do I submit a claim?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    <p>Email us at <a href="mailto:submit@claimreceipts.com">submit@claimreceipts.com</a> with:</p>
+                    <ul>
+                        <li><strong>Who</strong> — Person or organization name</li>
+                        <li><strong>What</strong> — The exact claim or quote</li>
+                        <li><strong>When</strong> — Date the claim was made</li>
+                        <li><strong>Deadline</strong> — When it should happen by</li>
+                        <li><strong>Source</strong> — Link to the original statement (video, article, tweet)</li>
+                    </ul>
+                    <p>We review all submissions for accuracy before adding them.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+                <span><span class="faq-category submission">Submission</span> What types of claims do you accept?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    <p>We accept claims that are:</p>
+                    <ul>
+                        <li><strong>Specific</strong> — Clear enough to verify (not vague like "AI will change everything")</li>
+                        <li><strong>Time-bound</strong> — Has a deadline or timeframe</li>
+                        <li><strong>Verifiable</strong> — Can be objectively checked</li>
+                        <li><strong>Sourced</strong> — Made publicly with documented evidence</li>
+                    </ul>
+                    <p>We currently focus on <strong>AI/LLM</strong>, <strong>Bitcoin/Crypto</strong>, and <strong>Tech</strong> predictions.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+                <span><span class="faq-category submission">Submission</span> Can I submit my own prediction?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    <p>We primarily track claims from <strong>public figures</strong> — CEOs, founders, analysts, and influencers with significant reach. This is because their predictions have outsized influence on public opinion and markets.</p>
+                    <p>That said, if you're a notable figure in your field and want to put your prediction on record, feel free to submit it!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Verdicts Questions -->
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+                <span><span class="faq-category verdicts">Verdicts</span> How do you decide if a claim is TRUE or FALSE?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    <p>We wait for the deadline to pass, then evaluate based on <strong>objective evidence</strong>:</p>
+                    <ul>
+                        <li><strong>TRUE</strong> — The prediction happened as described</li>
+                        <li><strong>FALSE</strong> — The prediction clearly did not happen</li>
+                        <li><strong>PENDING</strong> — Deadline hasn't passed yet</li>
+                        <li><strong>EXPIRED</strong> — Deadline passed, unclear outcome (we may update later)</li>
+                    </ul>
+                    <p>We try to be generous with interpretation — if someone said "by end of 2025" and it happened in January 2026, we might still count it. But "Bitcoin to $1 million by 2020" when it hit $29K? That's a clear FALSE.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+                <span><span class="faq-category verdicts">Verdicts</span> What if I disagree with a verdict?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    <p>We're human and can make mistakes! If you believe a verdict is incorrect, email us at <a href="mailto:corrections@claimreceipts.com">corrections@claimreceipts.com</a> with:</p>
+                    <ul>
+                        <li>Which claim you're disputing</li>
+                        <li>Why you think the verdict is wrong</li>
+                        <li>Evidence supporting your position</li>
+                    </ul>
+                    <p>We take accuracy seriously and will review all disputes.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+                <span><span class="faq-category verdicts">Verdicts</span> How is the "Trust Score" calculated?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    <p>Trust Score = (Total Claims - False Claims) / Total Claims × 100%</p>
+                    <p>For example, if someone made 5 predictions and 2 were proven false, their trust score is (5-2)/5 = 60%.</p>
+                    <p><strong>Note:</strong> Trust scores are only as good as our data. With more tracked claims, scores become more meaningful. We're still early, so take these with a grain of salt!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+                <span><span class="faq-category general">General</span> Is ClaimReceipts open source?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-content">
+                    <p>Yes! Our entire codebase is open source on GitHub. You can:</p>
+                    <ul>
+                        <li>⭐ Star the repo: <a href="https://github.com/SunnyShah0588/claimreceipts" target="_blank">github.com/SunnyShah0588/claimreceipts</a></li>
+                        <li>🐛 Report bugs or suggest features</li>
+                        <li>🔀 Submit pull requests with improvements</li>
+                        <li>📋 Add claims directly via PR</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-box">
+            <h3>🤔 Still have questions?</h3>
+            <p>We'd love to hear from you!</p>
+            <a href="mailto:hello@claimreceipts.com">
+                ✉️ Contact Us
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <p>
+            ClaimReceipts © 2025 — <a href="/">Home</a> · <a href="/about.html">About</a> · <a href="/faq.html">FAQ</a> · <a href="https://github.com/SunnyShah0588/claimreceipts">GitHub</a>
+        </p>
+    </footer>
+
+    <script>
+        // Theme handling
+        function initTheme() {
+            const saved = localStorage.getItem('claimreceipts-theme');
+            if (saved && saved !== 'auto') {
+                document.documentElement.setAttribute('data-theme', saved);
+            }
+        }
+        initTheme();
+
+        // FAQ toggle
+        function toggleFaq(button) {
+            const item = button.closest('.faq-item');
+            const wasOpen = item.classList.contains('open');
+            
+            // Close all others
+            document.querySelectorAll('.faq-item.open').forEach(faq => {
+                faq.classList.remove('open');
+            });
+            
+            // Toggle this one
+            if (!wasOpen) {
+                item.classList.add('open');
+            }
+        }
+    </script>
+</body>
+</html>
