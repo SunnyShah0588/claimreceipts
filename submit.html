@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit a Claim - ClaimReceipts 🧾</title>
+    <meta name="description" content="Submit a bold prediction or claim to be tracked on ClaimReceipts.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #fafbfc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+            --ai-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            --ai-text: #7c3aed;
+            --ai-light: #ede9fe;
+            --btc-light: #fef3c7;
+            --btc-text: #d97706;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --error: #ef4444;
+            --error-light: #fee2e2;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0c0c14;
+            --bg-secondary: #13131d;
+            --bg-card: #1a1a28;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #2d2d3d;
+            --ai-light: rgba(139, 92, 246, 0.15);
+            --btc-light: rgba(245, 158, 11, 0.15);
+            --success-light: rgba(16, 185, 129, 0.15);
+            --error-light: rgba(239, 68, 68, 0.15);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg-primary: #0c0c14;
+                --bg-secondary: #13131d;
+                --bg-card: #1a1a28;
+                --text-primary: #f1f5f9;
+                --text-secondary: #94a3b8;
+                --text-muted: #64748b;
+                --border-color: #2d2d3d;
+                --ai-light: rgba(139, 92, 246, 0.15);
+                --btc-light: rgba(245, 158, 11, 0.15);
+                --success-light: rgba(16, 185, 129, 0.15);
+                --error-light: rgba(239, 68, 68, 0.15);
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-emoji { font-size: 1.5rem; }
+        .logo-text { font-size: 1.1rem; font-weight: 700; }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--ai-text);
+        }
+
+        .page-hero {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .page-hero h1 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-hero p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+        }
+
+        .content {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .form-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .form-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-label .required {
+            color: var(--error);
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--ai-text);
+            box-shadow: 0 0 0 4px var(--ai-light);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        .category-options {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .category-option {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .category-option input {
+            display: none;
+        }
+
+        .category-option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1rem;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .category-option input:checked + label {
+            background: var(--ai-light);
+            border-color: var(--ai-text);
+            color: var(--ai-text);
+        }
+
+        .category-option:nth-child(2) input:checked + label {
+            background: var(--btc-light);
+            border-color: var(--btc-text);
+            color: var(--btc-text);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--ai-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .alert.success {
+            background: var(--success-light);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .alert.error {
+            background: var(--error-light);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .guidelines {
+            background: var(--ai-light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .guidelines h3 {
+            color: var(--ai-text);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .guidelines ul {
+            margin-left: 1.25rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .guidelines li {
+            margin-bottom: 0.25rem;
+        }
+
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 3rem;
+        }
+
+        .footer a {
+            color: var(--ai-text);
+            text-decoration: none;
+        }
+
+        .char-count {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: right;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <span class="logo-emoji">🧾</span>
+                <span class="logo-text">ClaimReceipts</span>
+            </a>
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about.html">About</a>
+                <a href="/faq.html">FAQ</a>
+                <a href="/submit.html" class="active">Submit</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <h1>📝 Submit a Claim</h1>
+        <p>Help us track bold predictions and hold leaders accountable</p>
+    </section>
+
+    <main class="content">
+        <div class="guidelines">
+            <h3>📋 Submission Guidelines</h3>
+            <ul>
+                <li><strong>Be specific</strong> — The claim should be verifiable</li>
+                <li><strong>Include a deadline</strong> — When should this happen by?</li>
+                <li><strong>Provide a source</strong> — Link to the original statement</li>
+                <li><strong>Public figures only</strong> — CEOs, founders, analysts, influencers</li>
+            </ul>
+        </div>
+
+        <div class="form-card">
+            <div id="alert" class="alert"></div>
+
+            <form id="claim-form">
+                <div class="form-section">
+                    <label class="form-label">Category <span class="required">*</span></label>
+                    <div class="category-options">
+                        <div class="category-option">
+                            <input type="radio" name="category" id="cat-ai" value="ai" required>
+                            <label for="cat-ai">🤖 AI / LLM</label>
+                        </div>
+                        <div class="category-option">
+                            <input type="radio" name="category" id="cat-btc" value="btc">
+                            <label for="cat-btc">₿ Crypto</label>
+                        </div>
+                        <div class="category-option">
+                            <input type="radio" name="category" id="cat-tech" value="tech">
+                            <label for="cat-tech">💻 Tech</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-section">
+                        <label class="form-label" for="person">Person Name <span class="required">*</span></label>
+                        <p class="form-hint">Who made the claim?</p>
+                        <input type="text" id="person" name="person" class="form-input" placeholder="e.g., Elon Musk" required>
+                    </div>
+                    <div class="form-section">
+                        <label class="form-label" for="organization">Organization</label>
+                        <p class="form-hint">Company or affiliation</p>
+                        <input type="text" id="organization" name="organization" class="form-input" placeholder="e.g., Tesla">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="claim">The Claim <span class="required">*</span></label>
+                    <p class="form-hint">What exactly did they say? Quote them if possible.</p>
+                    <textarea id="claim" name="claim" class="form-textarea" placeholder="e.g., &quot;Bitcoin will reach $500,000 by end of 2025&quot;" required maxlength="500"></textarea>
+                    <div class="char-count"><span id="claim-count">0</span>/500</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-section">
+                        <label class="form-label" for="date-made">Date Claimed <span class="required">*</span></label>
+                        <p class="form-hint">When was this said?</p>
+                        <input type="date" id="date-made" name="dateMade" class="form-input" required>
+                    </div>
+                    <div class="form-section">
+                        <label class="form-label" for="deadline">Deadline <span class="required">*</span></label>
+                        <p class="form-hint">When should it happen by?</p>
+                        <input type="date" id="deadline" name="deadline" class="form-input" required>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="source-url">Source URL <span class="required">*</span></label>
+                    <p class="form-hint">Link to the original statement (tweet, article, video, etc.)</p>
+                    <input type="url" id="source-url" name="sourceUrl" class="form-input" placeholder="https://..." required>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="source-label">Source Name</label>
+                    <p class="form-hint">Where was this published?</p>
+                    <input type="text" id="source-label" name="sourceLabel" class="form-input" placeholder="e.g., Twitter, CNBC, Bloomberg">
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="submitter-email">Your Email (optional)</label>
+                    <p class="form-hint">So we can notify you when it's approved</p>
+                    <input type="email" id="submitter-email" name="submitterEmail" class="form-input" placeholder="you@example.com">
+                </div>
+
+                <button type="submit" class="submit-btn" id="submit-btn">
+                    🚀 Submit Claim for Review
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>
+            ClaimReceipts © 2025 — <a href="/">Home</a> · <a href="/submit.html">Submit</a> · <a href="/about.html">About</a> · <a href="/faq.html">FAQ</a> · <a href="https://github.com/SunnyShah0588/claimreceipts">GitHub</a>
+        </p>
+    </footer>
+
+    <script>
+        // Theme handling
+        function initTheme() {
+            const saved = localStorage.getItem('claimreceipts-theme');
+            if (saved && saved !== 'auto') {
+                document.documentElement.setAttribute('data-theme', saved);
+            }
+        }
+        initTheme();
+
+        // Character counter
+        const claimInput = document.getElementById('claim');
+        const claimCount = document.getElementById('claim-count');
+        claimInput.addEventListener('input', () => {
+            claimCount.textContent = claimInput.value.length;
+        });
+
+        // Supabase configuration
+        // TODO: Replace with your Supabase URL and anon key
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+        // Check if Supabase is configured
+        const isSupabaseConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
+
+        // Form submission
+        document.getElementById('claim-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submit-btn');
+            const alert = document.getElementById('alert');
+            
+            btn.disabled = true;
+            btn.textContent = '⏳ Submitting...';
+
+            const formData = {
+                category: document.querySelector('input[name="category"]:checked')?.value,
+                person: document.getElementById('person').value.trim(),
+                organization: document.getElementById('organization').value.trim() || null,
+                claim: document.getElementById('claim').value.trim(),
+                dateMade: document.getElementById('date-made').value,
+                deadline: document.getElementById('deadline').value,
+                sourceUrl: document.getElementById('source-url').value.trim(),
+                sourceLabel: document.getElementById('source-label').value.trim() || 'Source',
+                submitterEmail: document.getElementById('submitter-email').value.trim() || null,
+                status: 'pending_review',
+                submittedAt: new Date().toISOString()
+            };
+
+            try {
+                if (isSupabaseConfigured) {
+                    // Submit to Supabase
+                    const response = await fetch(`${SUPABASE_URL}/rest/v1/submissions`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (!response.ok) throw new Error('Failed to submit');
+                } else {
+                    // Fallback: Store in localStorage for demo
+                    const submissions = JSON.parse(localStorage.getItem('claimreceipts-submissions') || '[]');
+                    formData.id = Date.now();
+                    submissions.push(formData);
+                    localStorage.setItem('claimreceipts-submissions', JSON.stringify(submissions));
+                }
+
+                // Success
+                alert.className = 'alert success show';
+                alert.innerHTML = '✅ <strong>Claim submitted!</strong> We\'ll review it and add it to the tracker if it meets our guidelines.';
+                document.getElementById('claim-form').reset();
+                claimCount.textContent = '0';
+
+            } catch (error) {
+                console.error('Submission error:', error);
+                alert.className = 'alert error show';
+                alert.innerHTML = '❌ <strong>Submission failed.</strong> Please try again or email us at submit@claimreceipts.com';
+            }
+
+            btn.disabled = false;
+            btn.textContent = '🚀 Submit Claim for Review';
+            
+            // Scroll to alert
+            alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    </script>
+</body>
+</html>
