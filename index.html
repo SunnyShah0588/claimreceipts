@@ -517,14 +517,142 @@
             padding: 1.5rem;
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow);
-            transition: all 0.3s;
+            transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, border-color 0.1s ease-out;
             position: relative;
             overflow: hidden;
         }
 
         .claim-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
+            border-color: var(--ai-text);
+        }
+
+        /* ========== CLAIMS LIST VIEW ========== */
+        .claims-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .claims-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .claims-list-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .claim-row {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.1s ease-out;
+        }
+
+        .claim-row:hover {
+            border-color: var(--ai-text);
+            background: var(--bg-card-hover);
+        }
+
+        .claim-row-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .claim-row[data-category="ai"] .claim-row-avatar { background: var(--ai-light); }
+        .claim-row[data-category="btc"] .claim-row-avatar { background: var(--btc-light); }
+        .claim-row[data-category="tech"] .claim-row-avatar { background: var(--tech-light); }
+
+        .claim-row-main {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .claim-row-person {
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .claim-row-person span {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .claim-row-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .claim-row-countdown {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .claim-row-status {
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .claim-row-status.true { background: var(--status-true-bg); color: var(--status-true); }
+        .claim-row-status.false { background: var(--status-false-bg); color: var(--status-false); }
+        .claim-row-status.pending { background: var(--status-pending-bg); color: var(--status-pending); }
+
+        .claim-row-source {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        .claim-row-source:hover {
+            color: var(--ai-text);
+        }
+
+        @media (max-width: 768px) {
+            .claim-row {
+                grid-template-columns: auto 1fr auto;
+                gap: 0.75rem;
+            }
+            .claim-row-countdown,
+            .claim-row-source {
+                display: none;
+            }
         }
 
         .claim-card::before {
@@ -1187,7 +1315,12 @@
                 return;
             }
 
-            grid.innerHTML = claims.map(c => {
+            // Split into featured (first 6) and rest (list)
+            const featured = claims.slice(0, 6);
+            const rest = claims.slice(6);
+
+            // Featured cards
+            let html = featured.map(c => {
                 const countdown = getCountdown(c.deadline, c.status);
                 return `
                     <div class="claim-card" data-category="${c.category}">
@@ -1214,6 +1347,36 @@
                     </div>
                 `;
             }).join('');
+
+            // Add list view for remaining claims
+            if (rest.length > 0) {
+                html += `
+                    <div class="claims-list-header" style="grid-column: 1 / -1;">
+                        <span class="claims-list-title">📋 All Claims (${rest.length} more)</span>
+                    </div>
+                    <div class="claims-list" style="grid-column: 1 / -1;">
+                        ${rest.map(c => {
+                            const countdown = getCountdown(c.deadline, c.status);
+                            return `
+                                <div class="claim-row" data-category="${c.category}">
+                                    <div class="claim-row-avatar">${c.avatar}</div>
+                                    <div class="claim-row-main">
+                                        <div class="claim-row-person">${c.person} <span>· ${c.organization}</span></div>
+                                        <div class="claim-row-text">${c.claim}</div>
+                                    </div>
+                                    <span class="claim-row-countdown ${countdown.class}">${countdown.text}</span>
+                                    <span class="claim-row-status ${c.status}">
+                                        ${c.status === 'true' ? '🍷 TRUE' : c.status === 'false' ? '🥛 FALSE' : '⏳ WAIT'}
+                                    </span>
+                                    <a href="${c.sourceUrl}" target="_blank" class="claim-row-source">📎 Source</a>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+
+            grid.innerHTML = html;
         }
 
         function renderHallOfShame() {
