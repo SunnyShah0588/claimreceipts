@@ -1016,302 +1016,49 @@
 
     <script>
         // ============ CLAIMS DATABASE ============
-        // This will be populated from Supabase or fallback to hardcoded data
+        // Loaded from Supabase
         let claimsData = [];
-        
-        // Fallback data (used if Supabase not configured or fails)
-        const fallbackClaimsData = [
-            // AI & LLM Claims
-            {
-                id: 1,
-                person: "Sam Altman",
-                organization: "OpenAI",
-                avatar: "👨‍💻",
-                claim: "AGI will be achieved within the next 5 years",
-                category: "ai",
-                dateMade: "2023-11-01",
-                deadline: "2028-11-01",
-                status: "pending",
-                sourceUrl: "https://www.ft.com/content/dd9ba2f6-f509-4030-b7f7-c9b3e7b1c2e3",
-                sourceLabel: "Financial Times"
-            },
-            {
-                id: 2,
-                person: "Emad Mostaque",
-                organization: "Stability AI",
-                avatar: "🎨",
-                claim: "There will be no programmers in 5 years",
-                category: "ai",
-                dateMade: "2023-06-01",
-                deadline: "2028-06-01",
-                status: "pending",
-                sourceUrl: "https://www.businessinsider.com/stability-ai-ceo-developers-utilmate-utilty-ai-2023-6",
-                sourceLabel: "Business Insider"
-            },
-            {
-                id: 3,
-                person: "Various Tech CEOs",
-                organization: "Tech Industry",
-                avatar: "🤖",
-                claim: "AI will replace most software developers within 6 months to a year",
-                category: "ai",
-                dateMade: "2023-03-01",
-                deadline: "2024-03-01",
-                status: "false",
-                sourceUrl: "https://twitter.com",
-                sourceLabel: "Multiple Sources",
-                verdictNote: "Software engineering jobs are still thriving in 2025. Demand remains high."
-            },
-            {
-                id: 4,
-                person: "Jensen Huang",
-                organization: "NVIDIA",
-                avatar: "💚",
-                claim: "The iPhone moment for AI has arrived",
-                category: "ai",
-                dateMade: "2023-05-29",
-                deadline: "2025-12-31",
-                status: "pending",
-                sourceUrl: "https://www.cnbc.com/2023/05/30/nvidia-ceo-says-ai-is-at-an-iphone-moment.html",
-                sourceLabel: "CNBC"
-            },
-            {
-                id: 5,
-                person: "Sundar Pichai",
-                organization: "Google",
-                avatar: "🔍",
-                claim: "AI will be more profound than fire or electricity",
-                category: "ai",
-                dateMade: "2018-01-01",
-                deadline: "2030-01-01",
-                status: "pending",
-                sourceUrl: "https://www.cnbc.com/2018/02/01/google-ceo-sundar-pichai-ai-is-more-important-than-fire-electricity.html",
-                sourceLabel: "CNBC"
-            },
-            {
-                id: 6,
-                person: "Dario Amodei",
-                organization: "Anthropic",
-                avatar: "🧠",
-                claim: "Powerful AI systems could pose existential risks within this decade",
-                category: "ai",
-                dateMade: "2023-07-01",
-                deadline: "2030-01-01",
-                status: "pending",
-                sourceUrl: "https://www.anthropic.com",
-                sourceLabel: "Anthropic"
-            },
-            {
-                id: 7,
-                person: "Yann LeCun",
-                organization: "Meta AI",
-                avatar: "🔬",
-                claim: "Current LLMs will never achieve AGI - we need new architectures",
-                category: "ai",
-                dateMade: "2023-06-01",
-                deadline: "2030-01-01",
-                status: "pending",
-                sourceUrl: "https://twitter.com/ylecun",
-                sourceLabel: "Twitter/X"
-            },
-            {
-                id: 8,
-                person: "Satya Nadella",
-                organization: "Microsoft",
-                avatar: "💼",
-                claim: "AI will augment and empower developers, not replace them",
-                category: "ai",
-                dateMade: "2023-03-16",
-                deadline: "2026-03-16",
-                status: "pending",
-                sourceUrl: "https://blogs.microsoft.com/blog/2023/03/16/introducing-microsoft-365-copilot-your-copilot-for-work/",
-                sourceLabel: "Microsoft Blog"
-            },
-            // Bitcoin & Crypto Claims
-            {
-                id: 10,
-                person: "Cathie Wood",
-                organization: "ARK Invest",
-                avatar: "📈",
-                claim: "Bitcoin will reach $1 million by 2030",
-                category: "btc",
-                dateMade: "2024-01-01",
-                deadline: "2030-12-31",
-                status: "pending",
-                sourceUrl: "https://www.cnbc.com/2024/01/11/cathie-wood-sees-more-than-1-million-bitcoin-by-2030.html",
-                sourceLabel: "CNBC"
-            },
-            {
-                id: 11,
-                person: "Tim Draper",
-                organization: "Draper Associates",
-                avatar: "💰",
-                claim: "Bitcoin will hit $250,000 by end of 2025",
-                category: "btc",
-                dateMade: "2023-06-01",
-                deadline: "2025-12-31",
-                status: "pending",
-                sourceUrl: "https://www.forbes.com/sites/billybambrough/2023/06/12/tim-draper-doubles-down-on-250000-bitcoin-price-prediction/",
-                sourceLabel: "Forbes"
-            },
-            {
-                id: 12,
-                person: "John McAfee",
-                organization: "McAfee",
-                avatar: "💀",
-                claim: "Bitcoin will reach $1 million by end of 2020",
-                category: "btc",
-                dateMade: "2017-07-17",
-                deadline: "2020-12-31",
-                status: "false",
-                sourceUrl: "https://twitter.com/officialmcafee/status/887024683379544065",
-                sourceLabel: "Twitter",
-                verdictNote: "Bitcoin ended 2020 at ~$29,000. Not even close to $1 million."
-            },
-            {
-                id: 13,
-                person: "Anthony Pompliano",
-                organization: "Pomp Investments",
-                avatar: "📊",
-                claim: "Bitcoin to $100,000 by end of 2021",
-                category: "btc",
-                dateMade: "2021-01-01",
-                deadline: "2021-12-31",
-                status: "false",
-                sourceUrl: "https://twitter.com/APompliano",
-                sourceLabel: "Twitter",
-                verdictNote: "Bitcoin ended 2021 at ~$47,000"
-            },
-            {
-                id: 14,
-                person: "Michael Saylor",
-                organization: "MicroStrategy",
-                avatar: "🏦",
-                claim: "Bitcoin will become the world's reserve asset",
-                category: "btc",
-                dateMade: "2021-01-01",
-                deadline: "2035-01-01",
-                status: "pending",
-                sourceUrl: "https://twitter.com/saylor",
-                sourceLabel: "Twitter/X"
-            },
-            {
-                id: 15,
-                person: "Do Kwon",
-                organization: "Terraform Labs",
-                avatar: "🌙",
-                claim: "UST is the most decentralized and secure stablecoin",
-                category: "btc",
-                dateMade: "2022-01-01",
-                deadline: "2022-12-31",
-                status: "false",
-                sourceUrl: "https://twitter.com/staboracle",
-                sourceLabel: "Twitter",
-                verdictNote: "UST collapsed in May 2022, losing $40+ billion. Do Kwon arrested."
-            },
-            {
-                id: 16,
-                person: "Sam Bankman-Fried",
-                organization: "FTX",
-                avatar: "🎮",
-                claim: "FTX is the safest and most regulated crypto exchange",
-                category: "btc",
-                dateMade: "2022-06-01",
-                deadline: "2023-01-01",
-                status: "false",
-                sourceUrl: "https://www.nytimes.com/2022/11/14/technology/ftx-sam-bankman-fried-crypto-bankruptcy.html",
-                sourceLabel: "NY Times",
-                verdictNote: "FTX collapsed Nov 2022. $8B missing. SBF convicted of fraud."
-            },
-            // Tech Claims
-            {
-                id: 20,
-                person: "Elon Musk",
-                organization: "Tesla",
-                avatar: "🚗",
-                claim: "Tesla will have full self-driving by end of 2020",
-                category: "tech",
-                dateMade: "2019-04-22",
-                deadline: "2020-12-31",
-                status: "false",
-                sourceUrl: "https://www.theverge.com/2019/4/22/18510828/tesla-elon-musk-autonomy-day-investor-comments-self-driving-cars-robotaxis",
-                sourceLabel: "The Verge",
-                verdictNote: "Full self-driving still not achieved as of 2025. Still in beta."
-            },
-            {
-                id: 21,
-                person: "Elon Musk",
-                organization: "Tesla",
-                avatar: "🚗",
-                claim: "There will be 1 million Tesla robotaxis on the road by 2020",
-                category: "tech",
-                dateMade: "2019-04-22",
-                deadline: "2020-12-31",
-                status: "false",
-                sourceUrl: "https://www.theverge.com/2019/4/22/18510828/tesla-elon-musk-autonomy-day-investor-comments-self-driving-cars-robotaxis",
-                sourceLabel: "The Verge",
-                verdictNote: "Zero robotaxis deployed by 2020. Still none operating commercially in 2025."
-            },
-            {
-                id: 22,
-                person: "Mark Zuckerberg",
-                organization: "Meta",
-                avatar: "👤",
-                claim: "The Metaverse will be the next major computing platform",
-                category: "tech",
-                dateMade: "2021-10-28",
-                deadline: "2026-10-28",
-                status: "pending",
-                sourceUrl: "https://about.fb.com/news/2021/10/founders-letter/",
-                sourceLabel: "Meta Blog"
-            },
-            {
-                id: 23,
-                person: "Elizabeth Holmes",
-                organization: "Theranos",
-                avatar: "🩸",
-                claim: "Theranos can run hundreds of tests from a single drop of blood",
-                category: "tech",
-                dateMade: "2014-01-01",
-                deadline: "2015-12-31",
-                status: "false",
-                sourceUrl: "https://www.wsj.com/articles/theranos-has-struggled-with-blood-tests-1444881901",
-                sourceLabel: "WSJ",
-                verdictNote: "Proven to be complete fraud. Holmes convicted and imprisoned."
-            }
-        ];
 
         // ============ LOAD CLAIMS FROM SUPABASE ============
         async function loadClaims() {
-            if (typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured) {
-                try {
-                    const data = await supabase.getClaims();
-                    if (data && data.length > 0) {
-                        // Map Supabase column names to camelCase
-                        claimsData = data.map(c => ({
-                            id: c.id,
-                            person: c.person,
-                            organization: c.organization,
-                            avatar: c.avatar,
-                            claim: c.claim,
-                            category: c.category,
-                            dateMade: c.date_made,
-                            deadline: c.deadline,
-                            status: c.status,
-                            sourceUrl: c.source_url,
-                            sourceLabel: c.source_label,
-                            verdictNote: c.verdict_note
-                        }));
-                        console.log('✅ Loaded', claimsData.length, 'claims from Supabase');
-                        return;
-                    }
-                } catch (error) {
-                    console.warn('⚠️ Supabase fetch failed, using fallback data:', error);
+            try {
+                const data = await supabase.getClaims();
+                if (data && data.length > 0) {
+                    // Map Supabase column names to camelCase
+                    claimsData = data.map(c => ({
+                        id: c.id,
+                        person: c.person,
+                        organization: c.organization,
+                        avatar: c.avatar,
+                        claim: c.claim,
+                        category: c.category,
+                        dateMade: c.date_made,
+                        deadline: c.deadline,
+                        status: c.status,
+                        sourceUrl: c.source_url,
+                        sourceLabel: c.source_label
+                    }));
+                    console.log('✅ Loaded', claimsData.length, 'claims from Supabase');
+                } else {
+                    console.warn('⚠️ No claims found in database');
+                    showError('No claims found. Add some claims to Supabase!');
                 }
+            } catch (error) {
+                console.error('❌ Failed to load claims:', error);
+                showError('Failed to load claims. Check your connection.');
             }
-            // Fallback to hardcoded data
-            claimsData = fallbackClaimsData;
-            console.log('📦 Using fallback claims data');
+        }
+
+        function showError(message) {
+            const grid = document.getElementById('claims-grid');
+            if (grid) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-state-icon">⚠️</div>
+                        <p>${message}</p>
+                    </div>
+                `;
+            }
         }
 
         // ============ THEME MANAGEMENT ============
