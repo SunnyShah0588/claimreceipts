@@ -462,6 +462,9 @@
         </p>
     </footer>
 
+    <!-- Supabase Config -->
+    <script src="/supabase-config.js"></script>
+
     <script>
         // Theme handling
         function initTheme() {
@@ -479,14 +482,6 @@
             claimCount.textContent = claimInput.value.length;
         });
 
-        // Supabase configuration
-        // TODO: Replace with your Supabase URL and anon key
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-
-        // Check if Supabase is configured
-        const isSupabaseConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
-
         // Form submission
         document.getElementById('claim-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -497,38 +492,29 @@
             btn.disabled = true;
             btn.textContent = '⏳ Submitting...';
 
+            // Map form data to Supabase column names (snake_case)
             const formData = {
                 category: document.querySelector('input[name="category"]:checked')?.value,
                 person: document.getElementById('person').value.trim(),
                 organization: document.getElementById('organization').value.trim() || null,
                 claim: document.getElementById('claim').value.trim(),
-                dateMade: document.getElementById('date-made').value,
+                date_made: document.getElementById('date-made').value,
                 deadline: document.getElementById('deadline').value,
-                sourceUrl: document.getElementById('source-url').value.trim(),
-                sourceLabel: document.getElementById('source-label').value.trim() || 'Source',
-                submitterEmail: document.getElementById('submitter-email').value.trim() || null,
-                status: 'pending_review',
-                submittedAt: new Date().toISOString()
+                source_url: document.getElementById('source-url').value.trim(),
+                source_label: document.getElementById('source-label').value.trim() || 'Source',
+                submitter_email: document.getElementById('submitter-email').value.trim() || null,
+                review_status: 'pending_review'
             };
 
             try {
-                if (isSupabaseConfigured) {
+                if (typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured) {
                     // Submit to Supabase
-                    const response = await fetch(`${SUPABASE_URL}/rest/v1/submissions`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'apikey': SUPABASE_ANON_KEY,
-                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-                    if (!response.ok) throw new Error('Failed to submit');
+                    await supabase.createSubmission(formData);
                 } else {
                     // Fallback: Store in localStorage for demo
                     const submissions = JSON.parse(localStorage.getItem('claimreceipts-submissions') || '[]');
                     formData.id = Date.now();
+                    formData.submitted_at = new Date().toISOString();
                     submissions.push(formData);
                     localStorage.setItem('claimreceipts-submissions', JSON.stringify(submissions));
                 }

@@ -1011,9 +1011,16 @@
         </p>
     </footer>
 
+    <!-- Supabase Config -->
+    <script src="/supabase-config.js"></script>
+
     <script>
         // ============ CLAIMS DATABASE ============
-        const claimsData = [
+        // This will be populated from Supabase or fallback to hardcoded data
+        let claimsData = [];
+        
+        // Fallback data (used if Supabase not configured or fails)
+        const fallbackClaimsData = [
             // AI & LLM Claims
             {
                 id: 1,
@@ -1274,6 +1281,39 @@
             }
         ];
 
+        // ============ LOAD CLAIMS FROM SUPABASE ============
+        async function loadClaims() {
+            if (typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured) {
+                try {
+                    const data = await supabase.getClaims();
+                    if (data && data.length > 0) {
+                        // Map Supabase column names to camelCase
+                        claimsData = data.map(c => ({
+                            id: c.id,
+                            person: c.person,
+                            organization: c.organization,
+                            avatar: c.avatar,
+                            claim: c.claim,
+                            category: c.category,
+                            dateMade: c.date_made,
+                            deadline: c.deadline,
+                            status: c.status,
+                            sourceUrl: c.source_url,
+                            sourceLabel: c.source_label,
+                            verdictNote: c.verdict_note
+                        }));
+                        console.log('✅ Loaded', claimsData.length, 'claims from Supabase');
+                        return;
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Supabase fetch failed, using fallback data:', error);
+                }
+            }
+            // Fallback to hardcoded data
+            claimsData = fallbackClaimsData;
+            console.log('📦 Using fallback claims data');
+        }
+
         // ============ THEME MANAGEMENT ============
         function getTimeBasedTheme() {
             const hour = new Date().getHours();
@@ -1484,7 +1524,10 @@
         }
 
         // ============ INITIALIZE ============
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load claims from Supabase (or fallback)
+            await loadClaims();
+            
             renderStats();
             renderVerdicts();
             renderClaims(claimsData);

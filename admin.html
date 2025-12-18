@@ -519,49 +519,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Code output */
-        .code-output {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-top: 1.5rem;
-            display: none;
-        }
-
-        .code-output.show { display: block; }
-
-        .code-output h4 {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-bottom: 0.75rem;
-        }
-
-        .code-output pre {
-            background: var(--bg-secondary);
-            padding: 1rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--success);
-        }
-
-        .copy-btn {
-            background: var(--ai-light);
-            color: var(--ai-text);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-family: inherit;
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            margin-top: 0.75rem;
-        }
-
-        .copy-btn:hover { background: var(--ai-text); color: white; }
-
         @media (max-width: 768px) {
             .admin-content { padding: 1rem; }
             .form-row { grid-template-columns: 1fr; }
@@ -629,12 +586,6 @@
             <div class="submissions-list" id="submissions-list">
                 <!-- Populated by JS -->
             </div>
-
-            <div class="code-output" id="code-output">
-                <h4>📋 Approved Claims - Copy this to index.html claimsData array:</h4>
-                <pre id="code-content"></pre>
-                <button class="copy-btn" onclick="copyCode()">📋 Copy Code</button>
-            </div>
         </main>
     </div>
 
@@ -699,14 +650,12 @@
         </div>
     </div>
 
+    <!-- Supabase Config -->
+    <script src="/supabase-config.js"></script>
+
     <script>
         // Simple password protection (change this!)
         const ADMIN_PASSWORD = 'claimreceipts2025';
-        
-        // Supabase config (same as submit.html)
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-        const isSupabaseConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
 
         let submissions = [];
         let currentFilter = 'pending_review';
@@ -741,17 +690,28 @@
             loadSubmissions();
         }
 
-        // Load submissions
+        // Load submissions from Supabase or localStorage
         async function loadSubmissions() {
-            if (isSupabaseConfigured) {
+            if (typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured) {
                 try {
-                    const response = await fetch(`${SUPABASE_URL}/rest/v1/submissions?order=submittedAt.desc`, {
-                        headers: {
-                            'apikey': SUPABASE_ANON_KEY,
-                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                        }
-                    });
-                    submissions = await response.json();
+                    const data = await supabase.getSubmissions();
+                    // Map snake_case to camelCase for UI
+                    submissions = data.map(s => ({
+                        id: s.id,
+                        person: s.person,
+                        organization: s.organization,
+                        avatar: s.avatar,
+                        claim: s.claim,
+                        category: s.category,
+                        dateMade: s.date_made,
+                        deadline: s.deadline,
+                        sourceUrl: s.source_url,
+                        sourceLabel: s.source_label,
+                        submitterEmail: s.submitter_email,
+                        status: s.review_status,
+                        submittedAt: s.submitted_at
+                    }));
+                    console.log('✅ Loaded', submissions.length, 'submissions from Supabase');
                 } catch (error) {
                     console.error('Failed to load from Supabase:', error);
                     submissions = [];
@@ -759,11 +719,26 @@
             } else {
                 // Load from localStorage
                 submissions = JSON.parse(localStorage.getItem('claimreceipts-submissions') || '[]');
+                // Normalize field names from old localStorage format
+                submissions = submissions.map(s => ({
+                    id: s.id,
+                    person: s.person,
+                    organization: s.organization,
+                    avatar: s.avatar,
+                    claim: s.claim,
+                    category: s.category,
+                    dateMade: s.dateMade || s.date_made,
+                    deadline: s.deadline,
+                    sourceUrl: s.sourceUrl || s.source_url,
+                    sourceLabel: s.sourceLabel || s.source_label || 'Source',
+                    submitterEmail: s.submitterEmail || s.submitter_email,
+                    status: s.status || s.review_status || 'pending_review',
+                    submittedAt: s.submittedAt || s.submitted_at
+                }));
             }
             
             updateStats();
             renderSubmissions();
-            generateCode();
         }
 
         function updateStats() {
@@ -847,12 +822,12 @@
                         </div>
                         <div class="submission-actions">
                             ${s.status === 'pending_review' ? `
-                                <button class="action-btn approve" onclick="updateStatus(${s.id}, 'approved')">✅ Approve</button>
+                                <button class="action-btn approve" onclick="approveAndPublish(${s.id})">✅ Approve & Publish</button>
                                 <button class="action-btn reject" onclick="updateStatus(${s.id}, 'rejected')">❌ Reject</button>
                             ` : s.status === 'rejected' ? `
-                                <button class="action-btn approve" onclick="updateStatus(${s.id}, 'approved')">✅ Approve Instead</button>
+                                <button class="action-btn approve" onclick="approveAndPublish(${s.id})">✅ Approve & Publish</button>
                             ` : `
-                                <button class="action-btn reject" onclick="updateStatus(${s.id}, 'rejected')">❌ Revoke Approval</button>
+                                <button class="action-btn reject" onclick="updateStatus(${s.id}, 'rejected')">❌ Revoke</button>
                             `}
                             <button class="action-btn edit" onclick="openEditModal(${s.id})">✏️ Edit</button>
                         </div>
@@ -861,29 +836,80 @@
             }).join('');
         }
 
+        // Approve submission AND add to live claims
+        async function approveAndPublish(id) {
+            const submission = submissions.find(s => s.id === id);
+            if (!submission) return;
+
+            const categoryEmojis = { ai: '🤖', btc: '₿', tech: '💻' };
+
+            if (typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured) {
+                try {
+                    // 1. Add to claims table
+                    await supabase.createClaim({
+                        person: submission.person,
+                        organization: submission.organization,
+                        avatar: submission.avatar || categoryEmojis[submission.category] || '👤',
+                        claim: submission.claim,
+                        category: submission.category,
+                        date_made: submission.dateMade,
+                        deadline: submission.deadline,
+                        status: 'pending',
+                        source_url: submission.sourceUrl,
+                        source_label: submission.sourceLabel || 'Source'
+                    });
+
+                    // 2. Update submission status
+                    await supabase.updateSubmission(id, { review_status: 'approved' });
+                    
+                    console.log('✅ Claim published to live site!');
+                    alert('✅ Claim approved and published to the live site!');
+                } catch (error) {
+                    console.error('Failed to publish:', error);
+                    alert('❌ Failed to publish. Check console for details.');
+                    return;
+                }
+            } else {
+                // localStorage fallback
+                const claims = JSON.parse(localStorage.getItem('claimreceipts-claims') || '[]');
+                claims.push({
+                    id: Date.now(),
+                    person: submission.person,
+                    organization: submission.organization,
+                    avatar: submission.avatar || categoryEmojis[submission.category] || '👤',
+                    claim: submission.claim,
+                    category: submission.category,
+                    dateMade: submission.dateMade,
+                    deadline: submission.deadline,
+                    status: 'pending',
+                    sourceUrl: submission.sourceUrl,
+                    sourceLabel: submission.sourceLabel || 'Source'
+                });
+                localStorage.setItem('claimreceipts-claims', JSON.stringify(claims));
+            }
+
+            // Update local state
+            const index = submissions.findIndex(s => s.id === id);
+            if (index !== -1) submissions[index].status = 'approved';
+            
+            updateStats();
+            renderSubmissions();
+        }
+
         async function updateStatus(id, status) {
             const index = submissions.findIndex(s => s.id === id);
             if (index === -1) return;
 
-            submissions[index].status = status;
-
-            if (isSupabaseConfigured) {
-                await fetch(`${SUPABASE_URL}/rest/v1/submissions?id=eq.${id}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                    },
-                    body: JSON.stringify({ status })
-                });
+            if (typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured) {
+                await supabase.updateSubmission(id, { review_status: status });
             } else {
+                submissions[index].status = status;
                 localStorage.setItem('claimreceipts-submissions', JSON.stringify(submissions));
             }
 
+            submissions[index].status = status;
             updateStats();
             renderSubmissions();
-            generateCode();
         }
 
         function openEditModal(id) {
@@ -916,7 +942,6 @@
             if (index === -1) return;
 
             const updated = {
-                ...submissions[index],
                 person: document.getElementById('edit-person').value,
                 organization: document.getElementById('edit-organization').value || null,
                 category: document.getElementById('edit-category').value,
@@ -928,63 +953,28 @@
                 avatar: document.getElementById('edit-avatar').value || null
             };
 
-            submissions[index] = updated;
-
-            if (isSupabaseConfigured) {
-                await fetch(`${SUPABASE_URL}/rest/v1/submissions?id=eq.${id}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                    },
-                    body: JSON.stringify(updated)
+            if (typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured) {
+                // Map to snake_case for Supabase
+                await supabase.updateSubmission(id, {
+                    person: updated.person,
+                    organization: updated.organization,
+                    category: updated.category,
+                    claim: updated.claim,
+                    date_made: updated.dateMade,
+                    deadline: updated.deadline,
+                    source_url: updated.sourceUrl,
+                    source_label: updated.sourceLabel,
+                    avatar: updated.avatar
                 });
             } else {
+                submissions[index] = { ...submissions[index], ...updated };
                 localStorage.setItem('claimreceipts-submissions', JSON.stringify(submissions));
             }
 
+            submissions[index] = { ...submissions[index], ...updated };
             closeModal();
             renderSubmissions();
-            generateCode();
         });
-
-        function generateCode() {
-            const approved = submissions.filter(s => s.status === 'approved');
-            if (approved.length === 0) {
-                document.getElementById('code-output').classList.remove('show');
-                return;
-            }
-
-            const code = approved.map((s, i) => {
-                const categoryEmojis = { ai: '🤖', btc: '₿', tech: '💻' };
-                return `{
-    id: ${100 + i},
-    person: "${s.person}",
-    organization: "${s.organization || ''}",
-    avatar: "${s.avatar || categoryEmojis[s.category] || '👤'}",
-    claim: "${s.claim.replace(/"/g, '\\"')}",
-    category: "${s.category}",
-    dateMade: "${s.dateMade}",
-    deadline: "${s.deadline}",
-    status: "pending",
-    sourceUrl: "${s.sourceUrl}",
-    sourceLabel: "${s.sourceLabel || 'Source'}"
-}`;
-            }).join(',\n');
-
-            document.getElementById('code-content').textContent = code;
-            document.getElementById('code-output').classList.add('show');
-        }
-
-        function copyCode() {
-            const code = document.getElementById('code-content').textContent;
-            navigator.clipboard.writeText(code);
-            
-            const btn = document.querySelector('.copy-btn');
-            btn.textContent = '✅ Copied!';
-            setTimeout(() => { btn.textContent = '📋 Copy Code'; }, 2000);
-        }
 
         // Close modal on escape
         document.addEventListener('keydown', (e) => {
