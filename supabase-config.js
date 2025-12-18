@@ -7,10 +7,10 @@
 
 const SUPABASE_CONFIG = {
     // Your Supabase project URL (e.g., https://xxxxx.supabase.co)
-    url: 'YOUR_SUPABASE_URL',
+    url: 'https://jzixzdleqfiatexitsrl.supabase.co',
     
     // Your Supabase anon/public key
-    anonKey: 'YOUR_SUPABASE_ANON_KEY'
+    anonKey: 'sb_publishable_aFNhkWgBxys-PxvcB2wnBA_Zv3UOpm5'
 };
 
 // Check if properly configured
@@ -42,12 +42,12 @@ const supabase = {
 
     // Get all claims (for main page)
     async getClaims() {
-        return this.fetch('claims', { query: '?order=created_at.desc' });
+        return this.fetch('claims', { query: '?select=*' });
     },
 
     // Get all submissions (for admin)
     async getSubmissions() {
-        return this.fetch('submissions', { query: '?order=submitted_at.desc' });
+        return this.fetch('submissions', { query: '?select=*' });
     },
 
     // Create a new submission
