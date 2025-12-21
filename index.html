@@ -469,18 +469,27 @@
             margin-bottom: 1.5rem;
         }
 
+        .controls-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
         .search-box {
             position: relative;
-            max-width: 500px;
+            flex: 1;
+            min-width: 250px;
+            max-width: 400px;
         }
 
         .search-box input {
             width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
+            padding: 0.875rem 1rem 0.875rem 3rem;
             background: var(--bg-card);
             border: 2px solid var(--border-color);
-            border-radius: 16px;
-            font-size: 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
             color: var(--text-primary);
             font-family: inherit;
             transition: all 0.2s;
@@ -498,6 +507,94 @@
             left: 1rem;
             top: 50%;
             transform: translateY(-50%);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-controls select {
+            padding: 0.75rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .filter-controls select:focus {
+            outline: none;
+            border-color: var(--ai-text);
+        }
+
+        .view-toggle {
+            display: flex;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .view-btn {
+            padding: 0.6rem 0.8rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            opacity: 0.5;
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover { opacity: 0.8; }
+        .view-btn.active { 
+            opacity: 1; 
+            background: var(--ai-light);
+        }
+
+        .active-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--ai-light);
+            color: var(--ai-text);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .filter-tag button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0 0.25rem;
+            opacity: 0.7;
+        }
+
+        .filter-tag button:hover { opacity: 1; }
+
+        .results-count {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .controls-row { flex-direction: column; align-items: stretch; }
+            .search-box { max-width: 100%; }
+            .filter-controls { justify-content: space-between; }
         }
 
         /* ========== CLAIMS GRID ========== */
@@ -980,6 +1077,25 @@
 
         .empty-state-icon { font-size: 4rem; margin-bottom: 1rem; }
 
+        /* ========== LOAD MORE ========== */
+        .load-more-btn {
+            padding: 0.875rem 2rem;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .load-more-btn:hover {
+            border-color: var(--ai-text);
+            background: var(--ai-light);
+        }
+
         /* ========== MOBILE ========== */
         @media (max-width: 640px) {
             .header { padding: 0.75rem 1rem; }
@@ -1086,11 +1202,34 @@
             </div>
         </div>
 
-        <!-- Search -->
+        <!-- Search & Controls -->
         <div class="search-section">
-            <div class="search-box">
-                <input type="text" id="search-input" placeholder="Search claims, people, or companies...">
+            <div class="controls-row">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Search claims, people, or companies...">
+                </div>
+                <div class="filter-controls">
+                    <select id="status-filter" onchange="applyFilters()">
+                        <option value="all">All Status</option>
+                        <option value="pending">⏳ Pending</option>
+                        <option value="false">🥛 False</option>
+                        <option value="true">🍷 True</option>
+                    </select>
+                    <select id="sort-select" onchange="applyFilters()">
+                        <option value="deadline-asc">⏰ Deadline (soonest)</option>
+                        <option value="deadline-desc">📅 Deadline (latest)</option>
+                        <option value="date-desc">🆕 Newest first</option>
+                        <option value="date-asc">📜 Oldest first</option>
+                        <option value="person-asc">👤 By person (A-Z)</option>
+                    </select>
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="hybrid" onclick="setView('hybrid')" title="Hybrid View">📊</button>
+                        <button class="view-btn" data-view="cards" onclick="setView('cards')" title="All Cards">🃏</button>
+                        <button class="view-btn" data-view="list" onclick="setView('list')" title="List Only">📋</button>
+                    </div>
+                </div>
             </div>
+            <div class="active-filters" id="active-filters"></div>
         </div>
 
         <!-- Claims Grid -->
@@ -1309,74 +1448,104 @@
                 grid.innerHTML = `
                     <div class="empty-state" style="grid-column: 1 / -1;">
                         <div class="empty-state-icon">🔍</div>
-                        <p>No claims found matching your search.</p>
+                        <p>No claims found matching your filters.</p>
                     </div>
                 `;
                 return;
             }
 
-            // Split into featured (first 6) and rest (list)
-            const featured = claims.slice(0, 6);
-            const rest = claims.slice(6);
+            const displayClaims = claims.slice(0, visibleItems);
+            const hasMore = claims.length > visibleItems;
 
-            // Featured cards
-            let html = featured.map(c => {
-                const countdown = getCountdown(c.deadline, c.status);
-                return `
-                    <div class="claim-card" data-category="${c.category}">
-                        <div class="claim-header">
-                            <div class="claim-person">
-                                <div class="claim-avatar">${c.avatar}</div>
-                                <div>
-                                    <div class="claim-name">${c.person}</div>
-                                    <div class="claim-org">${c.organization}</div>
-                                </div>
-                            </div>
-                            <span class="claim-category">${getCategoryLabel(c.category)}</span>
-                        </div>
-                        <p class="claim-quote">${c.claim}</p>
-                        <div class="claim-footer">
-                            <span class="claim-countdown ${countdown.class}">${countdown.text}</span>
-                            <span class="claim-status ${c.status}">
-                                ${c.status === 'true' ? '🍷 TRUE' : c.status === 'false' ? '🥛 FALSE' : '⏳ PENDING'}
-                            </span>
-                        </div>
-                        <a href="${c.sourceUrl}" target="_blank" class="claim-source">
-                            📎 ${c.sourceLabel}
-                        </a>
+            let html = '';
+
+            if (currentView === 'cards') {
+                // All cards view
+                html = displayClaims.map(c => renderCard(c)).join('');
+            } else if (currentView === 'list') {
+                // All list view
+                html = `
+                    <div class="claims-list" style="grid-column: 1 / -1;">
+                        ${displayClaims.map(c => renderRow(c)).join('')}
                     </div>
                 `;
-            }).join('');
+            } else {
+                // Hybrid view: 6 cards + list
+                const featured = displayClaims.slice(0, 6);
+                const rest = displayClaims.slice(6);
 
-            // Add list view for remaining claims
-            if (rest.length > 0) {
+                html = featured.map(c => renderCard(c)).join('');
+
+                if (rest.length > 0) {
+                    html += `
+                        <div class="claims-list-header" style="grid-column: 1 / -1;">
+                            <span class="claims-list-title">📋 More Claims (${rest.length})</span>
+                        </div>
+                        <div class="claims-list" style="grid-column: 1 / -1;">
+                            ${rest.map(c => renderRow(c)).join('')}
+                        </div>
+                    `;
+                }
+            }
+
+            // Load more button
+            if (hasMore) {
                 html += `
-                    <div class="claims-list-header" style="grid-column: 1 / -1;">
-                        <span class="claims-list-title">📋 All Claims (${rest.length} more)</span>
-                    </div>
-                    <div class="claims-list" style="grid-column: 1 / -1;">
-                        ${rest.map(c => {
-                            const countdown = getCountdown(c.deadline, c.status);
-                            return `
-                                <div class="claim-row" data-category="${c.category}">
-                                    <div class="claim-row-avatar">${c.avatar}</div>
-                                    <div class="claim-row-main">
-                                        <div class="claim-row-person">${c.person} <span>· ${c.organization}</span></div>
-                                        <div class="claim-row-text">${c.claim}</div>
-                                    </div>
-                                    <span class="claim-row-countdown ${countdown.class}">${countdown.text}</span>
-                                    <span class="claim-row-status ${c.status}">
-                                        ${c.status === 'true' ? '🍷 TRUE' : c.status === 'false' ? '🥛 FALSE' : '⏳ WAIT'}
-                                    </span>
-                                    <a href="${c.sourceUrl}" target="_blank" class="claim-row-source">📎 Source</a>
-                                </div>
-                            `;
-                        }).join('')}
+                    <div style="grid-column: 1 / -1; text-align: center; margin-top: 1.5rem;">
+                        <button onclick="loadMore()" class="load-more-btn">
+                            📥 Load More (${claims.length - visibleItems} remaining)
+                        </button>
                     </div>
                 `;
             }
 
             grid.innerHTML = html;
+        }
+
+        function renderCard(c) {
+            const countdown = getCountdown(c.deadline, c.status);
+            return `
+                <div class="claim-card" data-category="${c.category}">
+                    <div class="claim-header">
+                        <div class="claim-person">
+                            <div class="claim-avatar">${c.avatar}</div>
+                            <div>
+                                <div class="claim-name">${c.person}</div>
+                                <div class="claim-org">${c.organization}</div>
+                            </div>
+                        </div>
+                        <span class="claim-category">${getCategoryLabel(c.category)}</span>
+                    </div>
+                    <p class="claim-quote">${c.claim}</p>
+                    <div class="claim-footer">
+                        <span class="claim-countdown ${countdown.class}">${countdown.text}</span>
+                        <span class="claim-status ${c.status}">
+                            ${c.status === 'true' ? '🍷 TRUE' : c.status === 'false' ? '🥛 FALSE' : '⏳ PENDING'}
+                        </span>
+                    </div>
+                    <a href="${c.sourceUrl}" target="_blank" class="claim-source">
+                        📎 ${c.sourceLabel}
+                    </a>
+                </div>
+            `;
+        }
+
+        function renderRow(c) {
+            const countdown = getCountdown(c.deadline, c.status);
+            return `
+                <div class="claim-row" data-category="${c.category}">
+                    <div class="claim-row-avatar">${c.avatar}</div>
+                    <div class="claim-row-main">
+                        <div class="claim-row-person">${c.person} <span>· ${c.organization}</span></div>
+                        <div class="claim-row-text">${c.claim}</div>
+                    </div>
+                    <span class="claim-row-countdown ${countdown.class}">${countdown.text}</span>
+                    <span class="claim-row-status ${c.status}">
+                        ${c.status === 'true' ? '🍷 TRUE' : c.status === 'false' ? '🥛 FALSE' : '⏳ WAIT'}
+                    </span>
+                    <a href="${c.sourceUrl}" target="_blank" class="claim-row-source">📎 Source</a>
+                </div>
+            `;
         }
 
         function renderHallOfShame() {
@@ -1408,25 +1577,92 @@
 
         // ============ FILTER & SEARCH ============
         let currentCategory = 'all';
+        let currentView = 'hybrid';
+        let currentSort = 'deadline-asc';
+        let currentStatusFilter = 'all';
+        const ITEMS_PER_PAGE = 20;
+        let visibleItems = ITEMS_PER_PAGE;
 
         function filterCategory(category) {
             currentCategory = category;
             document.querySelectorAll('.category-tab').forEach(tab => {
                 tab.classList.toggle('active', tab.dataset.category === category);
             });
+            visibleItems = ITEMS_PER_PAGE; // Reset pagination
             applyFilters();
+        }
+
+        function setView(view) {
+            currentView = view;
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.view === view);
+            });
+            applyFilters();
+        }
+
+        function sortClaims(claims) {
+            const sorted = [...claims];
+            switch (currentSort) {
+                case 'deadline-asc':
+                    return sorted.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+                case 'deadline-desc':
+                    return sorted.sort((a, b) => new Date(b.deadline) - new Date(a.deadline));
+                case 'date-desc':
+                    return sorted.sort((a, b) => new Date(b.dateMade) - new Date(a.dateMade));
+                case 'date-asc':
+                    return sorted.sort((a, b) => new Date(a.dateMade) - new Date(b.dateMade));
+                case 'person-asc':
+                    return sorted.sort((a, b) => a.person.localeCompare(b.person));
+                default:
+                    return sorted;
+            }
         }
 
         function applyFilters() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            currentSort = document.getElementById('sort-select').value;
+            currentStatusFilter = document.getElementById('status-filter').value;
+
             let filtered = claimsData.filter(c => {
                 const matchesCategory = currentCategory === 'all' || c.category === currentCategory;
+                const matchesStatus = currentStatusFilter === 'all' || c.status === currentStatusFilter;
                 const matchesSearch = c.person.toLowerCase().includes(searchTerm) ||
                     c.organization.toLowerCase().includes(searchTerm) ||
                     c.claim.toLowerCase().includes(searchTerm);
-                return matchesCategory && matchesSearch;
+                return matchesCategory && matchesStatus && matchesSearch;
             });
+
+            // Apply sorting
+            filtered = sortClaims(filtered);
+
+            // Update active filters display
+            updateActiveFilters(filtered.length);
+
             renderClaims(filtered);
+        }
+
+        function updateActiveFilters(count) {
+            const container = document.getElementById('active-filters');
+            let tags = [];
+            
+            if (currentCategory !== 'all') {
+                const labels = { ai: '🤖 AI/LLM', btc: '₿ Crypto', tech: '💻 Tech' };
+                tags.push(`<span class="filter-tag">${labels[currentCategory]} <button onclick="filterCategory('all')">×</button></span>`);
+            }
+            if (currentStatusFilter !== 'all') {
+                const labels = { pending: '⏳ Pending', true: '🍷 True', false: '🥛 False' };
+                tags.push(`<span class="filter-tag">${labels[currentStatusFilter]} <button onclick="document.getElementById('status-filter').value='all';applyFilters()">×</button></span>`);
+            }
+
+            container.innerHTML = `
+                ${tags.join('')}
+                <span class="results-count">${count} claim${count !== 1 ? 's' : ''} found</span>
+            `;
+        }
+
+        function loadMore() {
+            visibleItems += ITEMS_PER_PAGE;
+            applyFilters();
         }
 
         function toggleHall() {

@@ -573,13 +573,28 @@
                 </div>
             </div>
 
+            <!-- Quick Actions -->
+            <div class="quick-actions" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                <button class="action-btn approve" onclick="openAddClaimModal()" style="font-size: 1rem; padding: 0.75rem 1.5rem;">
+                    ➕ Add Claim Directly
+                </button>
+                <button class="action-btn" onclick="approveAllPending()" style="background: var(--warning-light); color: var(--warning); font-size: 1rem; padding: 0.75rem 1.5rem;">
+                    ⚡ Approve All Pending
+                </button>
+            </div>
+
             <div class="section-header">
                 <h2 class="section-title">📋 Submissions</h2>
-                <div class="tabs">
-                    <button class="tab active" data-filter="pending_review" onclick="filterSubmissions('pending_review', this)">Pending</button>
-                    <button class="tab" data-filter="approved" onclick="filterSubmissions('approved', this)">Approved</button>
-                    <button class="tab" data-filter="rejected" onclick="filterSubmissions('rejected', this)">Rejected</button>
-                    <button class="tab" data-filter="all" onclick="filterSubmissions('all', this)">All</button>
+                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <input type="text" id="admin-search" placeholder="🔍 Search submissions..." 
+                           style="padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-family: inherit; width: 200px;"
+                           oninput="applySearch()">
+                    <div class="tabs">
+                        <button class="tab active" data-filter="pending_review" onclick="filterSubmissions('pending_review', this)">Pending</button>
+                        <button class="tab" data-filter="approved" onclick="filterSubmissions('approved', this)">Approved</button>
+                        <button class="tab" data-filter="rejected" onclick="filterSubmissions('rejected', this)">Rejected</button>
+                        <button class="tab" data-filter="all" onclick="filterSubmissions('all', this)">All</button>
+                    </div>
                 </div>
             </div>
 
@@ -645,6 +660,78 @@
                 <div class="modal-actions">
                     <button type="button" class="modal-btn secondary" onclick="closeModal()">Cancel</button>
                     <button type="submit" class="modal-btn primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Claim Modal (Direct) -->
+    <div class="modal-overlay" id="add-claim-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">➕ Add Claim Directly</h3>
+                <button class="modal-close" onclick="closeAddClaimModal()">&times;</button>
+            </div>
+            <form id="add-claim-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Person Name *</label>
+                        <input type="text" id="add-person" required placeholder="e.g., Elon Musk">
+                    </div>
+                    <div class="form-group">
+                        <label>Organization</label>
+                        <input type="text" id="add-organization" placeholder="e.g., Tesla">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="add-category">
+                            <option value="ai">🤖 AI / LLM</option>
+                            <option value="btc">₿ Crypto</option>
+                            <option value="tech">💻 Tech</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="add-status">
+                            <option value="pending">⏳ Pending</option>
+                            <option value="true">🍷 True (Verified)</option>
+                            <option value="false">🥛 False (Debunked)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Claim *</label>
+                    <textarea id="add-claim" required placeholder="The exact prediction or claim..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date Made *</label>
+                        <input type="date" id="add-date-made" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Deadline *</label>
+                        <input type="date" id="add-deadline" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Source URL *</label>
+                    <input type="url" id="add-source-url" required placeholder="https://...">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Source Label</label>
+                        <input type="text" id="add-source-label" placeholder="e.g., Reuters">
+                    </div>
+                    <div class="form-group">
+                        <label>Avatar Emoji</label>
+                        <input type="text" id="add-avatar" placeholder="e.g., 🎯" maxlength="4">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn secondary" onclick="closeAddClaimModal()">Cancel</button>
+                    <button type="submit" class="modal-btn primary">🚀 Add to Live Site</button>
                 </div>
             </form>
         </div>
@@ -767,6 +854,15 @@
                 filtered = submissions.filter(s => s.status === currentFilter);
             }
 
+            // Apply search filter
+            if (searchTerm) {
+                filtered = filtered.filter(s => 
+                    s.person.toLowerCase().includes(searchTerm) ||
+                    (s.organization && s.organization.toLowerCase().includes(searchTerm)) ||
+                    s.claim.toLowerCase().includes(searchTerm)
+                );
+            }
+
             if (filtered.length === 0) {
                 list.innerHTML = `
                     <div class="empty-state">
@@ -837,7 +933,7 @@
         }
 
         // Approve submission AND add to live claims
-        async function approveAndPublish(id) {
+        async function approveAndPublish(id, silent = false) {
             const submission = submissions.find(s => s.id === id);
             if (!submission) return;
 
@@ -863,11 +959,11 @@
                     await supabase.updateSubmission(id, { review_status: 'approved' });
                     
                     console.log('✅ Claim published to live site!');
-                    alert('✅ Claim approved and published to the live site!');
+                    if (!silent) alert('✅ Claim approved and published to the live site!');
                 } catch (error) {
                     console.error('Failed to publish:', error);
-                    alert('❌ Failed to publish. Check console for details.');
-                    return;
+                    if (!silent) alert('❌ Failed to publish. Check console for details.');
+                    throw error;
                 }
             } else {
                 // localStorage fallback
@@ -978,8 +1074,106 @@
 
         // Close modal on escape
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') {
+                closeModal();
+                closeAddClaimModal();
+            }
         });
+
+        // ============ SEARCH ============
+        let searchTerm = '';
+        function applySearch() {
+            searchTerm = document.getElementById('admin-search').value.toLowerCase();
+            renderSubmissions();
+        }
+
+        // ============ ADD CLAIM DIRECTLY ============
+        function openAddClaimModal() {
+            document.getElementById('add-claim-modal').classList.add('show');
+            document.getElementById('add-date-made').valueAsDate = new Date();
+        }
+
+        function closeAddClaimModal() {
+            document.getElementById('add-claim-modal').classList.remove('show');
+            document.getElementById('add-claim-form').reset();
+        }
+
+        document.getElementById('add-claim-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const categoryEmojis = { ai: '🤖', btc: '₿', tech: '💻' };
+            const category = document.getElementById('add-category').value;
+
+            const claimData = {
+                person: document.getElementById('add-person').value,
+                organization: document.getElementById('add-organization').value || null,
+                avatar: document.getElementById('add-avatar').value || categoryEmojis[category] || '🎯',
+                claim: document.getElementById('add-claim').value,
+                category: category,
+                date_made: document.getElementById('add-date-made').value,
+                deadline: document.getElementById('add-deadline').value,
+                status: document.getElementById('add-status').value,
+                source_url: document.getElementById('add-source-url').value,
+                source_label: document.getElementById('add-source-label').value || 'Source'
+            };
+
+            if (typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured) {
+                try {
+                    await supabase.createClaim(claimData);
+                    alert('✅ Claim added to live site!');
+                    closeAddClaimModal();
+                } catch (error) {
+                    console.error('Failed to add claim:', error);
+                    alert('❌ Failed to add claim. Check console.');
+                }
+            } else {
+                // localStorage fallback
+                const claims = JSON.parse(localStorage.getItem('claimreceipts-claims') || '[]');
+                claims.push({
+                    id: Date.now(),
+                    person: claimData.person,
+                    organization: claimData.organization,
+                    avatar: claimData.avatar,
+                    claim: claimData.claim,
+                    category: claimData.category,
+                    dateMade: claimData.date_made,
+                    deadline: claimData.deadline,
+                    status: claimData.status,
+                    sourceUrl: claimData.source_url,
+                    sourceLabel: claimData.source_label
+                });
+                localStorage.setItem('claimreceipts-claims', JSON.stringify(claims));
+                alert('✅ Claim added to live site!');
+                closeAddClaimModal();
+            }
+        });
+
+        // ============ APPROVE ALL PENDING ============
+        async function approveAllPending() {
+            const pending = submissions.filter(s => s.status === 'pending_review');
+            
+            if (pending.length === 0) {
+                alert('No pending submissions to approve.');
+                return;
+            }
+
+            if (!confirm(`Approve and publish ${pending.length} pending submission(s)?`)) {
+                return;
+            }
+
+            let successCount = 0;
+            for (const submission of pending) {
+                try {
+                    await approveAndPublish(submission.id, true); // true = silent mode
+                    successCount++;
+                } catch (error) {
+                    console.error('Failed to approve:', submission.id, error);
+                }
+            }
+
+            alert(`✅ ${successCount}/${pending.length} claims approved and published!`);
+            await loadSubmissions();
+        }
     </script>
 </body>
 </html>
