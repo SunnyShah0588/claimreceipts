@@ -18,14 +18,86 @@ const isSupabaseConfigured = SUPABASE_CONFIG.url !== 'YOUR_SUPABASE_URL';
 
 // Supabase REST API helper
 const supabase = {
+    // ============ AUTH METHODS ============
+    async signIn(email, password) {
+        const response = await fetch(`${SUPABASE_CONFIG.url}/auth/v1/token?grant_type=password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_CONFIG.anonKey
+            },
+            body: JSON.stringify({ email, password })
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error_description || error.msg || 'Login failed');
+        }
+        
+        const data = await response.json();
+        // Store session
+        localStorage.setItem('supabase-auth', JSON.stringify({
+            access_token: data.access_token,
+            refresh_token: data.refresh_token,
+            user: data.user,
+            expires_at: Date.now() + (data.expires_in * 1000)
+        }));
+        return data;
+    },
+
+    async signOut() {
+        const session = this.getSession();
+        if (session) {
+            try {
+                await fetch(`${SUPABASE_CONFIG.url}/auth/v1/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_CONFIG.anonKey,
+                        'Authorization': `Bearer ${session.access_token}`
+                    }
+                });
+            } catch (e) {
+                console.warn('Logout request failed:', e);
+            }
+        }
+        localStorage.removeItem('supabase-auth');
+    },
+
+    getSession() {
+        const stored = localStorage.getItem('supabase-auth');
+        if (!stored) return null;
+        
+        const session = JSON.parse(stored);
+        // Check if expired
+        if (session.expires_at && session.expires_at < Date.now()) {
+            localStorage.removeItem('supabase-auth');
+            return null;
+        }
+        return session;
+    },
+
+    isAuthenticated() {
+        return this.getSession() !== null;
+    },
+
+    getAuthHeaders() {
+        const session = this.getSession();
+        const token = session ? session.access_token : SUPABASE_CONFIG.anonKey;
+        return {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_CONFIG.anonKey,
+            'Authorization': `Bearer ${token}`
+        };
+    },
+
+    // ============ DATABASE METHODS ============
     async fetch(table, options = {}) {
         const { method = 'GET', body = null, query = '' } = options;
         const response = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/${table}${query}`, {
             method,
             headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_CONFIG.anonKey,
-                'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+                ...this.getAuthHeaders(),
                 'Prefer': method === 'POST' ? 'return=minimal' : 'return=representation'
             },
             body: body ? JSON.stringify(body) : null

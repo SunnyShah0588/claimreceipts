@@ -82,8 +82,11 @@
             font-size: 1rem;
             font-family: inherit;
             color: var(--text-primary);
-            text-align: center;
             margin-bottom: 1rem;
+        }
+
+        .login-input::placeholder {
+            color: var(--text-muted);
         }
 
         .login-input:focus {
@@ -532,10 +535,11 @@
     <div class="login-screen" id="login-screen">
         <div class="login-card">
             <h1>🔐 Admin Access</h1>
-            <p>Enter the admin password to continue</p>
-            <input type="password" class="login-input" id="password-input" placeholder="••••••••" autofocus>
-            <button class="login-btn" onclick="attemptLogin()">Enter Admin Panel</button>
-            <p class="login-error" id="login-error">❌ Incorrect password</p>
+            <p>Sign in with your admin account</p>
+            <input type="email" class="login-input" id="email-input" placeholder="admin@example.com" autocomplete="email">
+            <input type="password" class="login-input" id="password-input" placeholder="••••••••" autocomplete="current-password">
+            <button class="login-btn" onclick="attemptLogin()" id="login-btn">Sign In</button>
+            <p class="login-error" id="login-error"></p>
         </div>
     </div>
 
@@ -548,6 +552,7 @@
                 <span class="admin-badge">ADMIN</span>
             </div>
             <div style="display: flex; align-items: center; gap: 1rem;">
+                <span id="admin-email" style="color: var(--text-muted); font-size: 0.85rem;"></span>
                 <a href="/" style="color: var(--text-muted); text-decoration: none;">← Back to Site</a>
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
@@ -741,41 +746,64 @@
     <script src="/supabase-config.js"></script>
 
     <script>
-        // Simple password protection (change this!)
-        const ADMIN_PASSWORD = 'claimreceipts2025';
-
         let submissions = [];
         let currentFilter = 'pending_review';
 
-        // Login handling
+        // Login handling with Supabase Auth
         document.getElementById('password-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') attemptLogin();
         });
+        document.getElementById('email-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('password-input').focus();
+        });
 
-        function attemptLogin() {
+        async function attemptLogin() {
+            const email = document.getElementById('email-input').value.trim();
             const password = document.getElementById('password-input').value;
-            if (password === ADMIN_PASSWORD) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('admin-panel').classList.add('show');
-                sessionStorage.setItem('admin-auth', 'true');
-                loadSubmissions();
-            } else {
-                document.getElementById('login-error').style.display = 'block';
-                document.getElementById('password-input').value = '';
+            const errorEl = document.getElementById('login-error');
+            const loginBtn = document.getElementById('login-btn');
+
+            if (!email || !password) {
+                errorEl.textContent = '❌ Please enter email and password';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            loginBtn.textContent = 'Signing in...';
+            loginBtn.disabled = true;
+            errorEl.style.display = 'none';
+
+            try {
+                const data = await supabase.signIn(email, password);
+                showAdminPanel(data.user.email);
+            } catch (error) {
+                console.error('Login failed:', error);
+                errorEl.textContent = `❌ ${error.message}`;
+                errorEl.style.display = 'block';
+                loginBtn.textContent = 'Sign In';
+                loginBtn.disabled = false;
             }
         }
 
-        function logout() {
-            sessionStorage.removeItem('admin-auth');
+        function showAdminPanel(email) {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('admin-panel').classList.add('show');
+            document.getElementById('admin-email').textContent = email || '';
+            loadSubmissions();
+        }
+
+        async function logout() {
+            await supabase.signOut();
             location.reload();
         }
 
-        // Check if already logged in
-        if (sessionStorage.getItem('admin-auth') === 'true') {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('admin-panel').classList.add('show');
-            loadSubmissions();
-        }
+        // Check if already logged in via Supabase session
+        (function checkExistingSession() {
+            if (supabase.isAuthenticated()) {
+                const session = supabase.getSession();
+                showAdminPanel(session.user?.email);
+            }
+        })();
 
         // Load submissions from Supabase or localStorage
         async function loadSubmissions() {
