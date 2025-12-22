@@ -5,6 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClaimReceipts 🧾 - AI & Crypto Prediction Tracker</title>
     <meta name="description" content="Track bold AI and Bitcoin predictions from tech leaders. Did they age like wine or milk? Find out here.">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="AI predictions, Bitcoin predictions, tech predictions, Elon Musk predictions, Sam Altman, prediction tracker, accountability, fact check">
+    <meta name="author" content="ClaimReceipts">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://claimreceipts.vercel.app/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://claimreceipts.vercel.app/">
+    <meta property="og:title" content="ClaimReceipts - AI & Crypto Prediction Tracker">
+    <meta property="og:description" content="Track bold AI and Bitcoin predictions from tech leaders. Did they age like wine or milk? 🥛🍷">
+    <meta property="og:image" content="https://claimreceipts.vercel.app/og-image.svg">
+    <meta property="og:site_name" content="ClaimReceipts">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://claimreceipts.vercel.app/">
+    <meta name="twitter:title" content="ClaimReceipts - AI & Crypto Prediction Tracker">
+    <meta name="twitter:description" content="Track bold AI and Bitcoin predictions from tech leaders. Did they age like wine or milk? 🥛🍷">
+    <meta name="twitter:image" content="https://claimreceipts.vercel.app/og-image.svg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧾</text></svg>">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -882,10 +907,97 @@
             display: flex;
             align-items: center;
             gap: 0.25rem;
-            margin-top: 0.75rem;
         }
 
         .claim-source:hover { text-decoration: underline; }
+
+        .claim-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.75rem;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .share-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .share-btn:hover {
+            border-color: var(--ai-text);
+            color: var(--ai-text);
+            background: var(--ai-light);
+        }
+
+        .share-btn-small {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.2s;
+        }
+
+        .share-btn-small:hover {
+            border-color: var(--ai-text);
+            color: var(--ai-text);
+        }
+
+        /* Highlighted claim (from URL) */
+        .claim-card.highlighted,
+        .claim-row.highlighted {
+            animation: highlightPulse 2s ease-out;
+            border-color: var(--ai-text) !important;
+            box-shadow: 0 0 20px var(--ai-light) !important;
+        }
+
+        @keyframes highlightPulse {
+            0% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            box-shadow: var(--shadow-lg);
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
 
         /* ========== HALL OF SHAME (Collapsible) ========== */
         .hall-section {
@@ -1505,8 +1617,10 @@
 
         function renderCard(c) {
             const countdown = getCountdown(c.deadline, c.status);
+            const shareUrl = `${window.location.origin}/?claim=${c.id}`;
+            const shareText = `${c.person} predicted: "${c.claim}" - ${c.status === 'true' ? '🍷 Aged like wine!' : c.status === 'false' ? '🥛 Aged like milk!' : '⏳ Still waiting...'} Track it on ClaimReceipts`;
             return `
-                <div class="claim-card" data-category="${c.category}">
+                <div class="claim-card" data-category="${c.category}" data-id="${c.id}" id="claim-${c.id}">
                     <div class="claim-header">
                         <div class="claim-person">
                             <div class="claim-avatar">${c.avatar}</div>
@@ -1524,9 +1638,16 @@
                             ${c.status === 'true' ? '🍷 TRUE' : c.status === 'false' ? '🥛 FALSE' : '⏳ PENDING'}
                         </span>
                     </div>
-                    <a href="${c.sourceUrl}" target="_blank" class="claim-source">
-                        📎 ${c.sourceLabel}
-                    </a>
+                    <div class="claim-actions">
+                        <a href="${c.sourceUrl}" target="_blank" class="claim-source">
+                            📎 ${c.sourceLabel}
+                        </a>
+                        <div class="share-buttons">
+                            <button class="share-btn" onclick="copyClaimLink(${c.id})" title="Copy link">🔗</button>
+                            <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn" title="Share on X/Twitter">𝕏</a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn" title="Share on LinkedIn">in</a>
+                        </div>
+                    </div>
                 </div>
             `;
         }
@@ -1534,7 +1655,7 @@
         function renderRow(c) {
             const countdown = getCountdown(c.deadline, c.status);
             return `
-                <div class="claim-row" data-category="${c.category}">
+                <div class="claim-row" data-category="${c.category}" data-id="${c.id}" id="claim-${c.id}">
                     <div class="claim-row-avatar">${c.avatar}</div>
                     <div class="claim-row-main">
                         <div class="claim-row-person">${c.person} <span>· ${c.organization}</span></div>
@@ -1544,7 +1665,8 @@
                     <span class="claim-row-status ${c.status}">
                         ${c.status === 'true' ? '🍷 TRUE' : c.status === 'false' ? '🥛 FALSE' : '⏳ WAIT'}
                     </span>
-                    <a href="${c.sourceUrl}" target="_blank" class="claim-row-source">📎 Source</a>
+                    <button class="share-btn-small" onclick="copyClaimLink(${c.id})" title="Copy link">🔗</button>
+                    <a href="${c.sourceUrl}" target="_blank" class="claim-row-source">📎</a>
                 </div>
             `;
         }
@@ -1670,6 +1792,110 @@
             document.getElementById('hall-section').classList.toggle('expanded');
         }
 
+        // ============ SHARE FUNCTIONALITY ============
+        function copyClaimLink(claimId) {
+            const url = `${window.location.origin}/?claim=${claimId}`;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('🔗 Link copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const input = document.createElement('input');
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast('🔗 Link copied to clipboard!');
+            });
+        }
+
+        function showToast(message) {
+            // Remove existing toast
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            // Remove after 3s
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function highlightClaimFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const claimId = params.get('claim');
+            
+            if (claimId) {
+                const claim = claimsData.find(c => c.id == claimId);
+                if (claim) {
+                    // Update page title and meta for SEO
+                    document.title = `${claim.person}: "${claim.claim.substring(0, 50)}..." - ClaimReceipts`;
+                    
+                    // Update Open Graph meta for shared links
+                    updateMetaTag('og:title', `${claim.person} predicted: ${claim.claim.substring(0, 60)}...`);
+                    updateMetaTag('og:description', `${claim.status === 'true' ? '🍷 Aged like wine!' : claim.status === 'false' ? '🥛 Aged like milk!' : '⏳ Still waiting...'} Deadline: ${claim.deadline}`);
+                    updateMetaTag('twitter:title', `${claim.person} predicted: ${claim.claim.substring(0, 60)}...`);
+                    
+                    // Scroll to and highlight the claim
+                    setTimeout(() => {
+                        const element = document.getElementById(`claim-${claimId}`);
+                        if (element) {
+                            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            element.classList.add('highlighted');
+                        }
+                    }, 500);
+                }
+            }
+        }
+
+        function updateMetaTag(property, content) {
+            let meta = document.querySelector(`meta[property="${property}"]`) || 
+                       document.querySelector(`meta[name="${property}"]`);
+            if (meta) {
+                meta.setAttribute('content', content);
+            }
+        }
+
+        // ============ JSON-LD STRUCTURED DATA ============
+        function generateStructuredData() {
+            const itemListElements = claimsData.slice(0, 10).map((c, i) => ({
+                "@type": "ListItem",
+                "position": i + 1,
+                "item": {
+                    "@type": "Claim",
+                    "author": {
+                        "@type": "Person",
+                        "name": c.person,
+                        "worksFor": { "@type": "Organization", "name": c.organization }
+                    },
+                    "dateCreated": c.dateMade,
+                    "description": c.claim
+                }
+            }));
+
+            const structuredData = {
+                "@context": "https://schema.org",
+                "@type": "ItemList",
+                "name": "AI & Crypto Predictions Tracker",
+                "description": "Track bold AI and Bitcoin predictions from tech leaders",
+                "numberOfItems": claimsData.length,
+                "itemListElement": itemListElements
+            };
+
+            const script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.textContent = JSON.stringify(structuredData);
+            document.head.appendChild(script);
+        }
+
         // ============ INITIALIZE ============
         document.addEventListener('DOMContentLoaded', async () => {
             // Load claims from Supabase (or fallback)
@@ -1679,6 +1905,8 @@
             renderVerdicts();
             renderClaims(claimsData);
             renderHallOfShame();
+            generateStructuredData();
+            highlightClaimFromURL();
 
             document.getElementById('search-input').addEventListener('input', applyFilters);
 
