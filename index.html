@@ -1001,6 +1001,311 @@
             opacity: 1;
         }
 
+        /* ========== CLAIM DETAIL MODAL (Receipt Style) ========== */
+        .claim-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .claim-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .claim-modal {
+            background: var(--bg-card);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+            border: 2px solid var(--border-color);
+        }
+
+        .claim-modal-overlay.active .claim-modal {
+            transform: scale(1);
+        }
+
+        .claim-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-primary);
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .claim-modal-close:hover {
+            background: var(--status-false-bg);
+            color: var(--status-false);
+        }
+
+        /* Receipt Header */
+        .receipt-header {
+            padding: 2rem 1.5rem 1.5rem;
+            text-align: center;
+            border-bottom: 2px dashed var(--border-color);
+        }
+
+        .receipt-logo {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .receipt-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+        }
+
+        .receipt-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Receipt Body */
+        .receipt-body {
+            padding: 1.5rem;
+        }
+
+        .receipt-person {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .receipt-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .receipt-avatar.ai { background: var(--ai-light); }
+        .receipt-avatar.btc { background: var(--btc-light); }
+        .receipt-avatar.tech { background: var(--tech-light); }
+
+        .receipt-person-info h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .receipt-person-info span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .receipt-claim {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            padding: 1.25rem;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            border-left: 4px solid var(--ai-text);
+        }
+
+        .receipt-claim::before { content: '"'; }
+        .receipt-claim::after { content: '"'; }
+
+        .receipt-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .receipt-detail {
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border-radius: 10px;
+        }
+
+        .receipt-detail-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .receipt-detail-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* Verdict Badge */
+        .receipt-verdict {
+            text-align: center;
+            padding: 1.25rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+        }
+
+        .receipt-verdict.pending {
+            background: var(--status-pending-bg);
+            border: 2px solid var(--status-pending);
+        }
+
+        .receipt-verdict.true {
+            background: var(--status-true-bg);
+            border: 2px solid var(--status-true);
+        }
+
+        .receipt-verdict.false {
+            background: var(--status-false-bg);
+            border: 2px solid var(--status-false);
+        }
+
+        .receipt-verdict-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .receipt-verdict-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .receipt-verdict.pending .receipt-verdict-text { color: var(--status-pending); }
+        .receipt-verdict.true .receipt-verdict-text { color: var(--status-true); }
+        .receipt-verdict.false .receipt-verdict-text { color: var(--status-false); }
+
+        .receipt-countdown {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Share Section */
+        .receipt-share {
+            border-top: 2px dashed var(--border-color);
+            padding: 1.5rem;
+        }
+
+        .receipt-share-title {
+            text-align: center;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .share-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .share-btn-large {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem;
+            border-radius: 12px;
+            border: none;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .share-btn-large.twitter {
+            background: #000;
+            color: white;
+        }
+
+        .share-btn-large.linkedin {
+            background: #0A66C2;
+            color: white;
+        }
+
+        .share-btn-large.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .share-btn-large.telegram {
+            background: #0088CC;
+            color: white;
+        }
+
+        .share-btn-large.copy {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .share-btn-large.screenshot {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .share-btn-large:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .share-btn-large.copy:hover {
+            border-color: var(--ai-text);
+        }
+
+        /* Receipt Footer */
+        .receipt-footer {
+            text-align: center;
+            padding: 1rem 1.5rem 1.5rem;
+            border-top: 2px dashed var(--border-color);
+        }
+
+        .receipt-source {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--ai-text);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .receipt-source:hover { text-decoration: underline; }
+
+        .receipt-watermark {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+        }
+
         /* ========== HALL OF SHAME (Collapsible) ========== */
         .hall-section {
             background: var(--bg-card);
@@ -1393,6 +1698,87 @@
         </p>
     </footer>
 
+    <!-- Claim Detail Modal -->
+    <div class="claim-modal-overlay" id="claim-modal" onclick="closeClaimModal(event)">
+        <div class="claim-modal" onclick="event.stopPropagation()">
+            <button class="claim-modal-close" onclick="closeClaimModal()">×</button>
+            
+            <!-- Receipt Header -->
+            <div class="receipt-header">
+                <div class="receipt-logo">🧾</div>
+                <div class="receipt-title">Prediction Receipt</div>
+                <div class="receipt-id" id="modal-receipt-id">#000000</div>
+            </div>
+
+            <!-- Receipt Body -->
+            <div class="receipt-body">
+                <div class="receipt-person">
+                    <div class="receipt-avatar" id="modal-avatar">🎯</div>
+                    <div class="receipt-person-info">
+                        <h3 id="modal-person">Person Name</h3>
+                        <span id="modal-org">Organization</span>
+                    </div>
+                </div>
+
+                <div class="receipt-claim" id="modal-claim">
+                    The prediction text will go here...
+                </div>
+
+                <div class="receipt-details">
+                    <div class="receipt-detail">
+                        <div class="receipt-detail-label">Date Made</div>
+                        <div class="receipt-detail-value" id="modal-date-made">Jan 1, 2025</div>
+                    </div>
+                    <div class="receipt-detail">
+                        <div class="receipt-detail-label">Deadline</div>
+                        <div class="receipt-detail-value" id="modal-deadline">Dec 31, 2025</div>
+                    </div>
+                </div>
+
+                <div class="receipt-verdict" id="modal-verdict">
+                    <div class="receipt-verdict-emoji" id="modal-verdict-emoji">⏳</div>
+                    <div class="receipt-verdict-text" id="modal-verdict-text">PENDING</div>
+                    <div class="receipt-countdown" id="modal-countdown">365 days remaining</div>
+                </div>
+            </div>
+
+            <!-- Share Section -->
+            <div class="receipt-share">
+                <div class="receipt-share-title">📤 Share this receipt</div>
+                <div class="share-grid">
+                    <button class="share-btn-large twitter" onclick="shareOnTwitter()">
+                        𝕏 Twitter
+                    </button>
+                    <button class="share-btn-large linkedin" onclick="shareOnLinkedIn()">
+                        in LinkedIn
+                    </button>
+                    <button class="share-btn-large whatsapp" onclick="shareOnWhatsApp()">
+                        📱 WhatsApp
+                    </button>
+                    <button class="share-btn-large telegram" onclick="shareOnTelegram()">
+                        ✈️ Telegram
+                    </button>
+                    <button class="share-btn-large copy" onclick="copyModalLink()">
+                        🔗 Copy Link
+                    </button>
+                    <button class="share-btn-large screenshot" onclick="downloadReceipt()">
+                        📸 Screenshot
+                    </button>
+                </div>
+            </div>
+
+            <!-- Receipt Footer -->
+            <div class="receipt-footer">
+                <a href="#" class="receipt-source" id="modal-source" target="_blank">
+                    📎 View Original Source
+                </a>
+                <div class="receipt-watermark">
+                    claimreceipts.com • Holding predictions accountable
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Supabase Config -->
     <script src="/supabase-config.js"></script>
 
@@ -1619,10 +2005,8 @@
 
         function renderCard(c) {
             const countdown = getCountdown(c.deadline, c.status);
-            const shareUrl = `${window.location.origin}/?claim=${c.id}`;
-            const shareText = `${c.person} predicted: "${c.claim}" - ${c.status === 'true' ? '🍷 Aged like wine!' : c.status === 'false' ? '🥛 Aged like milk!' : '⏳ Still waiting...'} Track it on ClaimReceipts`;
             return `
-                <div class="claim-card" data-category="${c.category}" data-id="${c.id}" id="claim-${c.id}">
+                <div class="claim-card" data-category="${c.category}" data-id="${c.id}" id="claim-${c.id}" onclick="openClaimModal(${c.id})" style="cursor: pointer;">
                     <div class="claim-header">
                         <div class="claim-person">
                             <div class="claim-avatar">${c.avatar}</div>
@@ -1640,15 +2024,11 @@
                             ${c.status === 'true' ? '🍷 TRUE' : c.status === 'false' ? '🥛 FALSE' : '⏳ PENDING'}
                         </span>
                     </div>
-                    <div class="claim-actions">
+                    <div class="claim-actions" onclick="event.stopPropagation()">
                         <a href="${c.sourceUrl}" target="_blank" class="claim-source">
                             📎 ${c.sourceLabel}
                         </a>
-                        <div class="share-buttons">
-                            <button class="share-btn" onclick="copyClaimLink(${c.id})" title="Copy link">🔗</button>
-                            <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn" title="Share on X/Twitter">𝕏</a>
-                            <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn" title="Share on LinkedIn">in</a>
-                        </div>
+                        <button class="share-btn" onclick="openClaimModal(${c.id})" title="Share">📤</button>
                     </div>
                 </div>
             `;
@@ -1657,7 +2037,7 @@
         function renderRow(c) {
             const countdown = getCountdown(c.deadline, c.status);
             return `
-                <div class="claim-row" data-category="${c.category}" data-id="${c.id}" id="claim-${c.id}">
+                <div class="claim-row" data-category="${c.category}" data-id="${c.id}" id="claim-${c.id}" onclick="openClaimModal(${c.id})" style="cursor: pointer;">
                     <div class="claim-row-avatar">${c.avatar}</div>
                     <div class="claim-row-main">
                         <div class="claim-row-person">${c.person} <span>· ${c.organization}</span></div>
@@ -1667,8 +2047,8 @@
                     <span class="claim-row-status ${c.status}">
                         ${c.status === 'true' ? '🍷 TRUE' : c.status === 'false' ? '🥛 FALSE' : '⏳ WAIT'}
                     </span>
-                    <button class="share-btn-small" onclick="copyClaimLink(${c.id})" title="Copy link">🔗</button>
-                    <a href="${c.sourceUrl}" target="_blank" class="claim-row-source">📎</a>
+                    <button class="share-btn-small" onclick="event.stopPropagation(); openClaimModal(${c.id})" title="Share">📤</button>
+                    <a href="${c.sourceUrl}" target="_blank" class="claim-row-source" onclick="event.stopPropagation()">📎</a>
                 </div>
             `;
         }
@@ -1795,6 +2175,8 @@
         }
 
         // ============ SHARE FUNCTIONALITY ============
+        let currentModalClaim = null;
+
         function copyClaimLink(claimId) {
             const url = `${window.location.origin}/?claim=${claimId}`;
             navigator.clipboard.writeText(url).then(() => {
@@ -1831,6 +2213,176 @@
             }, 3000);
         }
 
+        // ============ CLAIM MODAL (VIRAL SHARE) ============
+        function openClaimModal(claimId) {
+            const claim = claimsData.find(c => c.id == claimId);
+            if (!claim) return;
+            
+            currentModalClaim = claim;
+            const modal = document.getElementById('claim-modal');
+            const countdown = getCountdown(claim.deadline, claim.status);
+            
+            // Populate modal content
+            document.getElementById('modal-receipt-id').textContent = `#${String(claim.id).padStart(6, '0')}`;
+            document.getElementById('modal-avatar').textContent = claim.avatar;
+            document.getElementById('modal-person').textContent = claim.person;
+            document.getElementById('modal-org').textContent = claim.organization;
+            document.getElementById('modal-claim').textContent = `"${claim.claim}"`;
+            document.getElementById('modal-deadline').textContent = claim.deadline;
+            document.getElementById('modal-countdown').textContent = countdown.text;
+            document.getElementById('modal-countdown').className = `receipt-countdown ${countdown.class}`;
+            
+            // Set source link
+            const sourceEl = document.getElementById('modal-source');
+            if (sourceEl) {
+                sourceEl.href = claim.sourceUrl;
+                sourceEl.textContent = `📎 Source: ${claim.sourceLabel}`;
+            }
+            
+            // Set verdict with proper structure
+            const verdictEmojiEl = document.getElementById('modal-verdict-emoji');
+            const verdictTextEl = document.getElementById('modal-verdict-text');
+            const verdictContainer = document.getElementById('modal-verdict');
+            
+            if (claim.status === 'true') {
+                verdictEmojiEl.textContent = '🍷';
+                verdictTextEl.textContent = 'AGED LIKE WINE';
+                verdictContainer.className = 'receipt-verdict true';
+            } else if (claim.status === 'false') {
+                verdictEmojiEl.textContent = '🥛';
+                verdictTextEl.textContent = 'AGED LIKE MILK';
+                verdictContainer.className = 'receipt-verdict false';
+            } else {
+                verdictEmojiEl.textContent = '⏳';
+                verdictTextEl.textContent = 'VERDICT PENDING';
+                verdictContainer.className = 'receipt-verdict pending';
+            }
+            
+            // Show modal with animation
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Update URL without reload
+            history.pushState({}, '', `?claim=${claimId}`);
+        }
+
+        function closeClaimModal(e) {
+            if (e && e.target !== e.currentTarget) return;
+            const modal = document.getElementById('claim-modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            currentModalClaim = null;
+            
+            // Reset URL
+            history.pushState({}, '', window.location.pathname);
+        }
+
+        function getViralShareText(claim, platform) {
+            const url = `${window.location.origin}/?claim=${claim.id}`;
+            const hashtags = '#ClaimReceipts #TechPredictions';
+            
+            let statusEmoji, statusText;
+            if (claim.status === 'true') {
+                statusEmoji = '🍷';
+                statusText = 'Aged like WINE! ✅';
+            } else if (claim.status === 'false') {
+                statusEmoji = '🥛';
+                statusText = 'Aged like MILK! 💀';
+            } else {
+                statusEmoji = '⏳';
+                statusText = `Deadline: ${claim.deadline}`;
+            }
+            
+            if (platform === 'twitter') {
+                // Twitter: Punchy, emoji-heavy, thread-style
+                return `${statusEmoji} RECEIPT FOUND
+
+${claim.person} said:
+"${claim.claim.substring(0, 180)}${claim.claim.length > 180 ? '...' : ''}"
+
+${statusText}
+
+${hashtags}
+${url}`;
+            } else if (platform === 'linkedin') {
+                // LinkedIn: More professional but still engaging
+                return `📋 Accountability Check
+
+${claim.person} (${claim.organization}) made this prediction:
+
+"${claim.claim}"
+
+${statusText}
+
+Tracking predictions that matter: ${url}`;
+            } else if (platform === 'whatsapp') {
+                // WhatsApp: Casual, shareable in groups
+                return `${statusEmoji} Look what ${claim.person} predicted!
+
+"${claim.claim}"
+
+${statusText}
+
+See the full receipt 👇
+${url}`;
+            } else if (platform === 'telegram') {
+                return `${statusEmoji} ${claim.person} prediction:
+
+"${claim.claim}"
+
+${statusText}
+
+📋 ${url}`;
+            }
+            
+            return `${claim.person}: "${claim.claim}" - ${statusText} ${url}`;
+        }
+
+        function shareOnTwitter() {
+            if (!currentModalClaim) return;
+            const text = getViralShareText(currentModalClaim, 'twitter');
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+            window.open(twitterUrl, '_blank', 'width=550,height=420');
+        }
+
+        function shareOnLinkedIn() {
+            if (!currentModalClaim) return;
+            const url = `${window.location.origin}/?claim=${currentModalClaim.id}`;
+            const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+            window.open(linkedInUrl, '_blank', 'width=550,height=420');
+        }
+
+        function shareOnWhatsApp() {
+            if (!currentModalClaim) return;
+            const text = getViralShareText(currentModalClaim, 'whatsapp');
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function shareOnTelegram() {
+            if (!currentModalClaim) return;
+            const text = getViralShareText(currentModalClaim, 'telegram');
+            const url = `${window.location.origin}/?claim=${currentModalClaim.id}`;
+            const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+            window.open(telegramUrl, '_blank');
+        }
+
+        function copyModalLink() {
+            if (!currentModalClaim) return;
+            copyClaimLink(currentModalClaim.id);
+        }
+
+        function downloadReceipt() {
+            if (!currentModalClaim) return;
+            // Future: Could use html2canvas to generate shareable image
+            showToast('📸 Screenshot this receipt to share!');
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeClaimModal({target: document.getElementById('claim-modal'), currentTarget: document.getElementById('claim-modal')});
+        });
+
         function highlightClaimFromURL() {
             const params = new URLSearchParams(window.location.search);
             const claimId = params.get('claim');
@@ -1846,8 +2398,11 @@
                     updateMetaTag('og:description', `${claim.status === 'true' ? '🍷 Aged like wine!' : claim.status === 'false' ? '🥛 Aged like milk!' : '⏳ Still waiting...'} Deadline: ${claim.deadline}`);
                     updateMetaTag('twitter:title', `${claim.person} predicted: ${claim.claim.substring(0, 60)}...`);
                     
-                    // Scroll to and highlight the claim
+                    // Open the claim modal automatically for shared links
                     setTimeout(() => {
+                        openClaimModal(claimId);
+                        
+                        // Also scroll to and highlight in background
                         const element = document.getElementById(`claim-${claimId}`);
                         if (element) {
                             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
