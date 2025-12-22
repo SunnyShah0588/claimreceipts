@@ -1,11 +1,11 @@
 # ClaimReceipts - robots.txt
-# https://claimreceipts.vercel.app
+# https://claimreceipts.com
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://claimreceipts.vercel.app/sitemap.xml
+Sitemap: https://claimreceipts.com/sitemap.xml
 
 # Disallow admin page from indexing
 Disallow: /admin.html
