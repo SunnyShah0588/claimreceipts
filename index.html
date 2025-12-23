@@ -676,29 +676,36 @@
 
         .claim-row {
             display: grid;
-            grid-template-columns: auto 1fr auto auto auto;
+            grid-template-columns: auto 1fr auto auto;
             gap: 1rem;
             align-items: center;
-            padding: 0.875rem 1rem;
+            padding: 1rem 1.25rem;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            transition: all 0.1s ease-out;
+            transition: all 0.15s ease-out;
+            position: relative;
         }
 
         .claim-row:hover {
             border-color: var(--ai-text);
             background: var(--bg-card-hover);
+            transform: translateX(4px);
+        }
+
+        .claim-row:hover .claim-row-actions {
+            opacity: 1;
+            transform: translateX(0);
         }
 
         .claim-row-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             flex-shrink: 0;
         }
 
@@ -710,46 +717,83 @@
             min-width: 0;
             display: flex;
             flex-direction: column;
-            gap: 0.15rem;
+            gap: 0.35rem;
+        }
+
+        .claim-row-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
         }
 
         .claim-row-person {
             font-weight: 600;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 0.95rem;
+            color: var(--text-primary);
         }
 
-        .claim-row-person span {
+        .claim-row-org {
             color: var(--text-muted);
-            font-weight: 400;
+            font-size: 0.8rem;
+        }
+
+        .claim-row-source {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.75rem;
+            opacity: 0.7;
+            transition: all 0.15s;
+        }
+
+        .claim-row:hover .claim-row-source {
+            opacity: 1;
+            color: var(--ai-text);
         }
 
         .claim-row-text {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--text-secondary);
-            white-space: nowrap;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            text-overflow: ellipsis;
+        }
+
+        .claim-row-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.35rem;
+            min-width: 120px;
         }
 
         .claim-row-countdown {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            font-weight: 600;
-            white-space: nowrap;
-            min-width: 80px;
-            text-align: right;
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background: var(--bg-primary);
+        }
+
+        .claim-row-countdown.expired { color: var(--status-false); }
+        .claim-row-countdown.urgent { color: var(--status-pending); }
+        .claim-row-countdown.safe { color: var(--text-muted); }
+
+        .claim-row-deadline {
+            font-size: 0.7rem;
+            color: var(--text-muted);
         }
 
         .claim-row-status {
-            padding: 0.3rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: 600;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
             white-space: nowrap;
-            min-width: 70px;
+            min-width: 80px;
             text-align: center;
         }
 
@@ -757,25 +801,74 @@
         .claim-row-status.false { background: var(--status-false-bg); color: var(--status-false); }
         .claim-row-status.pending { background: var(--status-pending-bg); color: var(--status-pending); }
 
-        .claim-row-source {
-            color: var(--text-muted);
+        .claim-row-actions {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%) translateX(10px);
+            opacity: 0;
+            transition: all 0.2s ease-out;
+            display: flex;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            padding: 0.25rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .claim-row-action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: none;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.15s;
             text-decoration: none;
-            font-size: 0.75rem;
-            white-space: nowrap;
         }
 
-        .claim-row-source:hover {
+        .claim-row-action-btn:hover {
+            background: var(--ai-light);
             color: var(--ai-text);
+            transform: scale(1.1);
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .claim-row {
                 grid-template-columns: auto 1fr auto;
                 gap: 0.75rem;
+                padding: 0.875rem 1rem;
             }
-            .claim-row-countdown,
-            .claim-row-source {
+            .claim-row-meta {
                 display: none;
+            }
+            .claim-row-actions {
+                opacity: 1;
+                transform: translateY(-50%) translateX(0);
+                position: static;
+                transform: none;
+                background: transparent;
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .claim-row {
+                grid-template-columns: auto 1fr;
+            }
+            .claim-row-status {
+                display: none;
+            }
+            .claim-row-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
             }
         }
 
@@ -2036,19 +2129,29 @@
 
         function renderRow(c) {
             const countdown = getCountdown(c.deadline, c.status);
+            const deadlineDate = new Date(c.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             return `
                 <div class="claim-row" data-category="${c.category}" data-id="${c.id}" id="claim-${c.id}" onclick="openClaimModal(${c.id})" style="cursor: pointer;">
                     <div class="claim-row-avatar">${c.avatar}</div>
                     <div class="claim-row-main">
-                        <div class="claim-row-person">${c.person} <span>· ${c.organization}</span></div>
-                        <div class="claim-row-text">${c.claim}</div>
+                        <div class="claim-row-header">
+                            <span class="claim-row-person">${c.person}</span>
+                            <span class="claim-row-org">· ${c.organization}</span>
+                            <a href="${c.sourceUrl}" target="_blank" class="claim-row-source" onclick="event.stopPropagation()">📎 ${c.sourceLabel}</a>
+                        </div>
+                        <div class="claim-row-text">"${c.claim}"</div>
                     </div>
-                    <span class="claim-row-countdown ${countdown.class}">${countdown.text}</span>
+                    <div class="claim-row-meta">
+                        <span class="claim-row-countdown ${countdown.class}">${countdown.text}</span>
+                        <span class="claim-row-deadline">📅 ${deadlineDate}</span>
+                    </div>
                     <span class="claim-row-status ${c.status}">
-                        ${c.status === 'true' ? '🍷 TRUE' : c.status === 'false' ? '🥛 FALSE' : '⏳ WAIT'}
+                        ${c.status === 'true' ? '🍷 TRUE' : c.status === 'false' ? '🥛 FALSE' : '⏳ PENDING'}
                     </span>
-                    <button class="share-btn-small" onclick="event.stopPropagation(); openClaimModal(${c.id})" title="Share">📤</button>
-                    <a href="${c.sourceUrl}" target="_blank" class="claim-row-source" onclick="event.stopPropagation()">📎</a>
+                    <div class="claim-row-actions" onclick="event.stopPropagation()">
+                        <button class="claim-row-action-btn" onclick="openClaimModal(${c.id})" title="Share">📤</button>
+                        <a href="${c.sourceUrl}" target="_blank" class="claim-row-action-btn" title="View Source">🔗</a>
+                    </div>
                 </div>
             `;
         }
